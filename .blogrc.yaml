@@ -2,7 +2,8 @@
 # 공개 설정 - Git에 커밋 가능
 
 server:
-  host: blog.fcoinfup.com
+  host: oci-fcoinfup-ec1.fcoinfup.com
+  ip: 152.67.214.190
   user: ubuntu
   deploy_path: /var/www/blog
 
@@ -20,3 +21,11 @@ deploy:
     - OCI_USER
     - OCI_DEPLOY_PATH
     - SSH_PRIVATE_KEY
+
+monitoring:
+  enabled: true
+  interval: 60
+  alerts:
+    http_failure: true
+    ssh_failure: true
+    disk_threshold: 90
