@@ -1,6 +1,21 @@
 # Blog MCP Server (통합 버전)
 
-API 서버 없이 직접 Git과 파일 시스템에 접근하는 MCP 서버입니다.
+Claude Code에서 블로그 포스트를 관리할 수 있는 MCP 서버입니다.
+
+> **설치 가이드**: [INSTALL.md](./INSTALL.md)를 참조하세요.
+
+## 빠른 시작
+
+```bash
+# 1. 의존성 설치
+cd blogs/.claude
+pip install -r requirements.txt
+
+# 2. Claude Desktop 설정 파일 수정
+# ~/Library/Application Support/Claude/claude_desktop_config.json
+
+# 3. Claude Desktop 재시작
+```
 
 ## 아키텍처
 
