@@ -6,7 +6,7 @@ set -e
 # 변수 설정
 DEPLOY_USER="${1:-ubuntu}"      # OCI 서버 사용자명 (예: ubuntu, opc)
 DEPLOY_PATH="${2:-/var/www/blog}"  # 배포 경로
-DOMAIN="${3:-oci-fcoinfup-ec1.fcoinfup.com}"         # 도메인 (선택사항)
+DOMAIN="${3:-blog.fcoinfup.com}"         # 도메인 (선택사항)
 
 echo "=== OCI 블로그 서버 설정 시작 ==="
 echo "사용자: $DEPLOY_USER"
