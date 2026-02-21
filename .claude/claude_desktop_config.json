@@ -5,8 +5,7 @@
       "args": [".claude/mcp_server.py"],
       "cwd": "/Users/yarang/workspaces/agent_dev/blogs",
       "env": {
-        "BLOG_API_URL": "https://api.blog.fcoinfup.com",
-        "BLOG_API_KEY": "your_api_key_here"
+        "BLOG_ROOT": "/Users/yarang/workspaces/agent_dev/blogs"
       }
     }
   }
