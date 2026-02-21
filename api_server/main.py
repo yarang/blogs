@@ -35,7 +35,7 @@ load_dotenv()
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     logger.info("Blog API Server starting...")
-    logger.info(f"Repo: {blog_manager.repo_path}")
+    logger.info(f"Repo: {blog_manager.git.repo_path}")
 
     # 초기 동기화
     blog_manager.git.pull()
