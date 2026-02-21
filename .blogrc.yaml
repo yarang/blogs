@@ -2,7 +2,7 @@
 # 공개 설정 - Git에 커밋 가능
 
 server:
-  host: oci-yarang-ec1.fcoinfup.com
+  host: blog.fcoinfup.com
   user: ubuntu
   deploy_path: /var/www/blog
 
