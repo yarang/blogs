@@ -10,7 +10,7 @@ theme = 'PaperMod'
   env = "production"
   description = "Tech blog for AI and Developer"
   author = "yarang"
-  defaultTheme = "auto"
+  defaultTheme = "light"
   ShowReadingTime = true
   ShowShareButtons = true
   ShowPostNavLinks = true
@@ -18,13 +18,31 @@ theme = 'PaperMod'
   ShowCodeCopyButtons = true
   ShowRssButtonInSectionTermList = true
   UseHugoToc = true
+  disableThemeToggle = true
 
-  [params.homeInfoParams]
-    Title = "Yarang's Tech Lair"
-    Content = """
-    AI와 개발에 대한 기술 블로그입니다.
-    프롬프트 엔지니어링, 클라우드 인프라, 소프트웨어 개발 경험을 공유합니다.
-    """
+  [params.profileMode]
+    enabled = true
+    title = "Yarang's Tech Lair"
+    subtitle = "AI와 개발에 대한 기술 블로그"
+    # imageUrl = "/images/profile.png"
+    # imageWidth = 120
+    # imageHeight = 120
+
+    [[params.profileMode.buttons]]
+      name = "포스트"
+      url = "/posts/"
+
+    [[params.profileMode.buttons]]
+      name = "카테고리"
+      url = "/categories/"
+
+    [[params.profileMode.buttons]]
+      name = "태그"
+      url = "/tags/"
+
+    [[params.profileMode.buttons]]
+      name = "검색"
+      url = "/search/"
 
   [[params.socialIcons]]
     name = "github"
@@ -34,6 +52,12 @@ theme = 'PaperMod'
   URL = "https://github.com/yarang/blogs/tree/main/content"
   Text = "Suggest Changes"
   appendFilePath = true
+
+# 포스트 목록 카드 뷰 설정
+[params.home]
+  [params.home.columns]
+    pc = 2
+    mobile = 1
 
 [menu]
   [[menu.main]]
@@ -81,5 +105,5 @@ theme = 'PaperMod'
   [markup.highlight]
     codeFences = true
     guessSyntax = true
-    lineNos = true
-    style = "monokai"
+    lineNos = false
+    style = "github"
