@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 400">
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#64748b"/>
+    </marker>
+    <marker id="arrowhead-blue" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#3b82f6"/>
+    </marker>
+    <marker id="arrowhead-green" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#10b981"/>
+    </marker>
+  </defs>
+
+  <!-- Background -->
+  <rect width="800" height="400" fill="#f8fafc"/>
+
+  <!-- Title -->
+  <text x="400" y="30" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" font-weight="bold" fill="#1e293b">Agent Communication Protocol</text>
+
+  <!-- Agent A -->
+  <rect x="50" y="60" width="120" height="50" rx="8" fill="#3b82f6"/>
+  <text x="110" y="90" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="white">Agent A</text>
+  <line x1="110" y1="110" x2="110" y2="350" stroke="#3b82f6" stroke-width="2" stroke-dasharray="5,3"/>
+
+  <!-- Message Bus -->
+  <rect x="340" y="60" width="120" height="50" rx="8" fill="#f59e0b"/>
+  <text x="400" y="90" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="white">Message Bus</text>
+  <line x1="400" y1="110" x2="400" y2="350" stroke="#f59e0b" stroke-width="2" stroke-dasharray="5,3"/>
+
+  <!-- Agent B -->
+  <rect x="630" y="60" width="120" height="50" rx="8" fill="#10b981"/>
+  <text x="690" y="90" text-anchor="middle" font-family="Arial, sans-serif" font-size="14" font-weight="bold" fill="white">Agent B</text>
+  <line x1="690" y1="110" x2="690" y2="350" stroke="#10b981" stroke-width="2" stroke-dasharray="5,3"/>
+
+  <!-- Step 1: Request -->
+  <line x1="110" y1="140" x2="395" y2="140" stroke="#3b82f6" stroke-width="2" marker-end="url(#arrowhead-blue)"/>
+  <rect x="170" y="125" width="160" height="24" rx="4" fill="#dbeafe"/>
+  <text x="250" y="142" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#1e40af">1. publish(task_request)</text>
+
+  <!-- Step 2: Route -->
+  <line x1="400" y1="165" x2="685" y2="165" stroke="#f59e0b" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <rect x="460" y="150" width="160" height="24" rx="4" fill="#fef3c7"/>
+  <text x="540" y="167" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#92400e">2. route(agent_capability)</text>
+
+  <!-- Step 3: Accept -->
+  <line x1="690" y1="200" x2="405" y2="200" stroke="#10b981" stroke-width="2" marker-end="url(#arrowhead-green)"/>
+  <rect x="460" y="185" width="160" height="24" rx="4" fill="#d1fae5"/>
+  <text x="540" y="202" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#065f46">3. accept(task_id)</text>
+
+  <!-- Step 4: Acknowledge -->
+  <line x1="400" y1="235" x2="115" y2="235" stroke="#f59e0b" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <rect x="170" y="220" width="160" height="24" rx="4" fill="#fef3c7"/>
+  <text x="250" y="237" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#92400e">4. acknowledge(agent_b)</text>
+
+  <!-- Step 5: Execute -->
+  <rect x="655" y="260" width="70" height="30" rx="4" fill="#dcfce7" stroke="#10b981"/>
+  <text x="690" y="280" text-anchor="middle" font-family="Arial, sans-serif" font-size="10" fill="#166534">5. execute</text>
+
+  <!-- Step 6: Result -->
+  <line x1="690" y1="310" x2="405" y2="310" stroke="#10b981" stroke-width="2" marker-end="url(#arrowhead-green)"/>
+  <rect x="460" y="295" width="160" height="24" rx="4" fill="#d1fae5"/>
+  <text x="540" y="312" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#065f46">6. publish(result)</text>
+
+  <!-- Step 7: Deliver -->
+  <line x1="400" y1="340" x2="115" y2="340" stroke="#f59e0b" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <rect x="170" y="325" width="160" height="24" rx="4" fill="#fef3c7"/>
+  <text x="250" y="342" text-anchor="middle" font-family="Arial, sans-serif" font-size="11" fill="#92400e">7. deliver(result)</text>
+
+  <!-- Message Format Box -->
+  <rect x="20" y="380" width="760" height="0" rx="0" fill="none"/>
+</svg>
