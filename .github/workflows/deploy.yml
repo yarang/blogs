@@ -35,11 +35,11 @@ jobs:
           mkdir -p ~/.ssh
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/deploy_key
           chmod 600 ~/.ssh/deploy_key
-          ssh-keyscan -H ${{ secrets.OCI_HOST }} >> ~/.ssh/known_hosts
+          ssh-keyscan -H ${{ secrets.OCI_HOST }} > ~/.ssh/known_hosts
 
       - name: Deploy to OCI server
         run: |
           rsync -avz --delete \
-            -e "ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no" \
+            -e "ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null" \
             public/ \
             ${{ secrets.OCI_USER }}@${{ secrets.OCI_HOST }}:${{ secrets.OCI_DEPLOY_PATH }}
