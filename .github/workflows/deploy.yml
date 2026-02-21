@@ -9,6 +9,8 @@ on:
       - 'themes/**'
       - 'hugo.toml'
       - '.github/workflows/**'
+      - '.blogrc.yaml'
+  workflow_dispatch:
 
 jobs:
   deploy:
