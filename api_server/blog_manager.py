@@ -1,123 +1,158 @@
 """
-블로그 포스트 관리 모듈
+Blog Manager - Git 기반 블로그 포스트 관리
+
+독립적으로 Git 저장소를 관리합니다.
 """
 
 import os
 import re
 import json
+import subprocess
 import threading
 from datetime import datetime
 from pathlib import Path
 from typing import Optional, List, Dict, Any
-from dataclasses import dataclass
-import frontmatter
+import logging
+
+logger = logging.getLogger(__name__)
+
+# 설정
+BLOG_REPO_URL = os.getenv("BLOG_REPO_URL", "https://github.com/yarang/blogs.git")
+BLOG_REPO_PATH = Path(os.getenv("BLOG_REPO_PATH", "/var/www/blog-repo"))
+CONTENT_DIR = BLOG_REPO_PATH / "content" / "posts"
+
+# 동기화 락
+_lock = threading.Lock()
 
 
-# 블로그 루트 경로 (환경 변수로 설정 가능)
-BLOG_ROOT = Path(os.getenv("BLOG_ROOT", Path(__file__).parent.parent))
-CONTENT_DIR = BLOG_ROOT / "content" / "posts"
+class GitManager:
+    """Git 저장소 관리자"""
 
+    def __init__(self, repo_path: Path = BLOG_REPO_PATH, repo_url: str = BLOG_REPO_URL):
+        self.repo_path = repo_path
+        self.repo_url = repo_url
 
-# 파일 작업 동기화를 위한 락
-_file_lock = threading.Lock()
+    def ensure_repo(self) -> bool:
+        """저장소가 있으면 pull, 없으면 clone"""
+        if self.repo_path.exists():
+            return self.pull()
+        else:
+            return self.clone()
 
+    def clone(self) -> bool:
+        """저장소 클론"""
+        try:
+            self.repo_path.parent.mkdir(parents=True, exist_ok=True)
+            result = subprocess.run(
+                ["git", "clone", self.repo_url, str(self.repo_path)],
+                capture_output=True, text=True, timeout=120
+            )
+            if result.returncode == 0:
+                logger.info(f"Cloned repo to {self.repo_path}")
+                return True
+            logger.error(f"Clone failed: {result.stderr}")
+            return False
+        except Exception as e:
+            logger.error(f"Clone error: {e}")
+            return False
 
-@dataclass
-class PostMetadata:
-    """포스트 메타데이터"""
-    title: str
-    date: str
-    draft: bool
-    tags: List[str]
-    categories: List[str]
-    show_toc: bool = True
-    toc_open: bool = True
+    def pull(self) -> bool:
+        """최신 내용 가져오기"""
+        try:
+            result = subprocess.run(
+                ["git", "pull", "origin", "main"],
+                cwd=self.repo_path, capture_output=True, text=True, timeout=60
+            )
+            if result.returncode == 0:
+                logger.info("Pulled latest changes")
+                return True
+            logger.error(f"Pull failed: {result.stderr}")
+            return False
+        except Exception as e:
+            logger.error(f"Pull error: {e}")
+            return False
+
+    def commit_and_push(self, message: str, files: List[str] = None) -> Dict:
+        """커밋하고 푸시"""
+        with _lock:
+            try:
+                # 파일 추가
+                if files:
+                    for f in files:
+                        subprocess.run(
+                            ["git", "add", f],
+                            cwd=self.repo_path, capture_output=True
+                        )
+                else:
+                    subprocess.run(
+                        ["git", "add", "content/", "static/"],
+                        cwd=self.repo_path, capture_output=True
+                    )
+
+                # 변경사항 확인
+                result = subprocess.run(
+                    ["git", "diff", "--cached", "--quiet"],
+                    cwd=self.repo_path, capture_output=True
+                )
+                if result.returncode == 0:
+                    return {"success": True, "message": "변경사항 없음"}
+
+                # 커밋
+                timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                full_msg = f"{message}\n\nBy Blog API at {timestamp}"
+                result = subprocess.run(
+                    ["git", "commit", "-m", full_msg],
+                    cwd=self.repo_path, capture_output=True, text=True
+                )
+                if result.returncode != 0:
+                    return {"success": False, "error": f"Commit 실패: {result.stderr}"}
+
+                # 푸시
+                result = subprocess.run(
+                    ["git", "push", "origin", "main"],
+                    cwd=self.repo_path, capture_output=True, text=True, timeout=60
+                )
+                if result.returncode != 0:
+                    return {"success": False, "error": f"Push 실패: {result.stderr}"}
+
+                return {"success": True, "message": "커밋 및 푸시 완료"}
+
+            except Exception as e:
+                return {"success": False, "error": str(e)}
 
 
 class BlogManager:
-    """블로그 포스트 관리 클래스"""
+    """블로그 포스트 관리자"""
 
-    def __init__(self, content_dir: Path = CONTENT_DIR):
-        self.content_dir = content_dir
-        self.content_dir.mkdir(parents=True, exist_ok=True)
+    def __init__(self):
+        self.git = GitManager()
+        self._ensure_ready()
+
+    def _ensure_ready(self):
+        """저장소 준비 확인"""
+        if not CONTENT_DIR.exists():
+            self.git.ensure_repo()
 
     def _generate_filename(self, title: str) -> str:
-        """파일명 생성: YYYY-MM-DD-NNN-slug.md"""
-        today = datetime.now()
-        date_str = today.strftime("%Y-%m-%d")
-
-        # slug 생성
+        """파일명 생성"""
+        today = datetime.now().strftime("%Y-%m-%d")
         slug = re.sub(r'[^\w\s-]', '', title.lower())
-        slug = re.sub(r'[\s]+', '-', slug)
-        slug = re.sub(r'-+', '-', slug).strip('-')
-        slug = slug[:50] or "post"
+        slug = re.sub(r'[\s]+', '-', slug)[:50]
 
-        # 다음 번호 찾기
-        existing = list(self.content_dir.glob(f"{date_str}-*.md"))
-        next_num = len(existing) + 1
+        existing = list(CONTENT_DIR.glob(f"{today}-*.md"))
+        num = len(existing) + 1
 
-        # 중복 방지
         while True:
-            filename = f"{date_str}-{next_num:03d}-{slug}.md"
-            if not (self.content_dir / filename).exists():
-                break
-            next_num += 1
+            filename = f"{today}-{num:03d}-{slug}.md"
+            if not (CONTENT_DIR / filename).exists():
+                return filename
+            num += 1
 
-        return filename
-
-    def list_posts(self, limit: int = 20, offset: int = 0) -> Dict[str, Any]:
-        """포스트 목록 조회"""
-        posts = []
-
-        for file in sorted(self.content_dir.glob("*.md"), reverse=True):
-            try:
-                with open(file, 'r', encoding='utf-8') as f:
-                    post = frontmatter.load(f)
-
-                posts.append({
-                    "filename": file.name,
-                    "title": post.get("title", "Untitled"),
-                    "date": str(post.get("date", "")),
-                    "draft": post.get("draft", False),
-                    "tags": post.get("tags", []),
-                    "categories": post.get("categories", []),
-                })
-            except Exception as e:
-                posts.append({
-                    "filename": file.name,
-                    "title": "Error loading post",
-                    "error": str(e)
-                })
-
-        return {
-            "posts": posts[offset:offset + limit],
-            "total": len(posts),
-            "offset": offset,
-            "limit": limit
-        }
-
-    def get_post(self, filename: str) -> Optional[Dict[str, Any]]:
-        """특정 포스트 조회"""
-        file_path = self.content_dir / filename
-
-        if not file_path.exists():
-            return None
-
-        try:
-            with open(file_path, 'r', encoding='utf-8') as f:
-                post = frontmatter.load(f)
-
-            return {
-                "filename": filename,
-                "title": post.get("title", "Untitled"),
-                "date": str(post.get("date", "")),
-                "draft": post.get("draft", False),
-                "tags": post.get("tags", []),
-                "categories": post.get("categories", []),
-                "content": post.content,
-            }
-        except Exception as e:
-            return {"error": str(e), "filename": filename}
+    def sync(self) -> Dict:
+        """Git 동기화"""
+        if self.git.pull():
+            return {"success": True, "message": "동기화 완료"}
+        return {"success": False, "error": "동기화 실패"}
 
     def create_post(
         self,
@@ -125,120 +160,133 @@ class BlogManager:
         content: str,
         tags: List[str] = None,
         categories: List[str] = None,
-        draft: bool = False
-    ) -> Dict[str, Any]:
-        """새 포스트 생성"""
-        with _file_lock:
+        draft: bool = False,
+        auto_push: bool = True
+    ) -> Dict:
+        """포스트 생성"""
+        with _lock:
+            # 동기화
+            self.git.pull()
+
             tags = tags or []
             categories = categories or ["Development"]
-
             filename = self._generate_filename(title)
-            file_path = self.content_dir / filename
 
-            # Front matter와 함께 포스트 생성
-            post = frontmatter.Post(content)
-            post["title"] = title
-            post["date"] = datetime.now().strftime("%Y-%m-%dT%H:%M:%S+09:00")
-            post["draft"] = draft
-            post["tags"] = tags
-            post["categories"] = categories
-            post["ShowToc"] = True
-            post["TocOpen"] = True
+            front_matter = f'''+++
+title = "{title}"
+date = {datetime.now().strftime("%Y-%m-%dT%H:%M:%S+09:00")}
+draft = {str(draft).lower()}
+tags = {json.dumps(tags)}
+categories = {json.dumps(categories)}
+ShowToc = true
+TocOpen = true
++++
 
-            with open(file_path, 'w', encoding='utf-8') as f:
-                frontmatter.dump(post, f)
+{content}'''
 
-            return {
+            CONTENT_DIR.mkdir(parents=True, exist_ok=True)
+            filepath = CONTENT_DIR / filename
+            filepath.write_text(front_matter, encoding="utf-8")
+
+            result = {
                 "success": True,
                 "filename": filename,
-                "path": str(file_path.relative_to(BLOG_ROOT)),
-                "message": f"포스트가 생성되었습니다: {filename}"
+                "path": f"content/posts/{filename}",
+                "message": f"포스트 생성: {filename}"
             }
 
-    def update_post(
-        self,
-        filename: str,
-        title: str = None,
-        content: str = None,
-        tags: List[str] = None,
-        categories: List[str] = None,
-        draft: bool = None
-    ) -> Dict[str, Any]:
+            # 자동 푸시
+            if auto_push:
+                git_result = self.git.commit_and_push(
+                    f"Add post: {title}",
+                    [result["path"]]
+                )
+                result["git"] = git_result
+
+            return result
+
+    def list_posts(self, limit: int = 20, offset: int = 0) -> Dict:
+        """포스트 목록"""
+        self.git.pull()
+
+        posts = []
+        for f in sorted(CONTENT_DIR.glob("*.md"), reverse=True):
+            try:
+                content = f.read_text(encoding="utf-8")
+                title = "Unknown"
+                for line in content.split("\n")[1:10]:
+                    if line.startswith('title = '):
+                        title = line.split('"')[1]
+                        break
+                posts.append({"filename": f.name, "title": title})
+            except:
+                pass
+
+        return {"posts": posts[offset:offset+limit], "total": len(posts)}
+
+    def get_post(self, filename: str) -> Dict:
+        """포스트 조회"""
+        filepath = CONTENT_DIR / filename
+        if not filepath.exists():
+            return {"error": "파일 없음"}
+        return {"filename": filename, "content": filepath.read_text(encoding="utf-8")}
+
+    def update_post(self, filename: str, content: str = None, auto_push: bool = True) -> Dict:
         """포스트 수정"""
-        with _file_lock:
-            file_path = self.content_dir / filename
+        with _lock:
+            filepath = CONTENT_DIR / filename
+            if not filepath.exists():
+                return {"success": False, "error": "파일 없음"}
 
-            if not file_path.exists():
-                return {"success": False, "error": f"포스트를 찾을 수 없습니다: {filename}"}
+            if content:
+                filepath.write_text(content, encoding="utf-8")
 
-            try:
-                with open(file_path, 'r', encoding='utf-8') as f:
-                    post = frontmatter.load(f)
+            result = {"success": True, "filename": filename}
 
-                # 업데이트
-                if title is not None:
-                    post["title"] = title
-                if content is not None:
-                    post.content = content
-                if tags is not None:
-                    post["tags"] = tags
-                if categories is not None:
-                    post["categories"] = categories
-                if draft is not None:
-                    post["draft"] = draft
+            if auto_push:
+                result["git"] = self.git.commit_and_push(
+                    f"Update post: {filename}",
+                    [f"content/posts/{filename}"]
+                )
 
-                with open(file_path, 'w', encoding='utf-8') as f:
-                    frontmatter.dump(post, f)
+            return result
 
-                return {
-                    "success": True,
-                    "filename": filename,
-                    "message": f"포스트가 수정되었습니다: {filename}"
-                }
-            except Exception as e:
-                return {"success": False, "error": str(e)}
-
-    def delete_post(self, filename: str) -> Dict[str, Any]:
+    def delete_post(self, filename: str, auto_push: bool = True) -> Dict:
         """포스트 삭제"""
-        with _file_lock:
-            file_path = self.content_dir / filename
+        with _lock:
+            filepath = CONTENT_DIR / filename
+            if not filepath.exists():
+                return {"success": False, "error": "파일 없음"}
 
-            if not file_path.exists():
-                return {"success": False, "error": f"포스트를 찾을 수 없습니다: {filename}"}
+            filepath.unlink()
 
-            try:
-                file_path.unlink()
-                return {
-                    "success": True,
-                    "message": f"포스트가 삭제되었습니다: {filename}"
-                }
-            except Exception as e:
-                return {"success": False, "error": str(e)}
+            result = {"success": True, "message": "삭제 완료"}
 
-    def search_posts(self, query: str) -> Dict[str, Any]:
+            if auto_push:
+                result["git"] = self.git.commit_and_push(
+                    f"Delete post: {filename}"
+                )
+
+            return result
+
+    def search_posts(self, query: str) -> Dict:
         """포스트 검색"""
+        self.git.pull()
+
         results = []
         query_lower = query.lower()
 
-        for file in self.content_dir.glob("*.md"):
-            try:
-                content = file.read_text(encoding='utf-8')
-                content_lower = content.lower()
-
-                if query_lower in content_lower:
-                    post = frontmatter.load(file)
-                    results.append({
-                        "filename": file.name,
-                        "title": post.get("title", "Untitled"),
-                        "relevance": content_lower.count(query_lower),
-                    })
-            except Exception:
-                continue
+        for f in CONTENT_DIR.glob("*.md"):
+            content = f.read_text(encoding="utf-8").lower()
+            if query_lower in content:
+                results.append({
+                    "filename": f.name,
+                    "relevance": content.count(query_lower)
+                })
 
         results.sort(key=lambda x: x["relevance"], reverse=True)
+        return {"results": results[:20], "query": query}
 
-        return {
-            "results": results[:20],
-            "query": query,
-            "count": len(results)
-        }
+
+# 전역 인스턴스
+blog_manager = BlogManager()
