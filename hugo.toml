@@ -1,8 +1,85 @@
 baseURL = 'https://blog.fcoinfup.com/'
 languageCode = 'ko-kr'
 title = "Yarang's Tech Lair"
-theme = 'ananke'
+theme = 'PaperMod'
+
+[pagination]
+  pagerSize = 10
 
 [params]
-  author = 'yarang'
-  description = 'Tech blog for AI and Developer'
+  env = "production"
+  description = "Tech blog for AI and Developer"
+  author = "yarang"
+  defaultTheme = "auto"
+  ShowReadingTime = true
+  ShowShareButtons = true
+  ShowPostNavLinks = true
+  ShowBreadCrumbs = true
+  ShowCodeCopyButtons = true
+  ShowRssButtonInSectionTermList = true
+  UseHugoToc = true
+
+  [params.homeInfoParams]
+    Title = "Yarang's Tech Lair"
+    Content = """
+    AI와 개발에 대한 기술 블로그입니다.
+    프롬프트 엔지니어링, 클라우드 인프라, 소프트웨어 개발 경험을 공유합니다.
+    """
+
+  [[params.socialIcons]]
+    name = "github"
+    url = "https://github.com/yarang"
+
+[params.editPost]
+  URL = "https://github.com/yarang/blogs/tree/main/content"
+  Text = "Suggest Changes"
+  appendFilePath = true
+
+[menu]
+  [[menu.main]]
+    identifier = "posts"
+    name = "포스트"
+    url = "/posts/"
+    weight = 10
+
+  [[menu.main]]
+    identifier = "categories"
+    name = "카테고리"
+    url = "/categories/"
+    weight = 20
+
+  [[menu.main]]
+    identifier = "tags"
+    name = "태그"
+    url = "/tags/"
+    weight = 30
+
+  [[menu.main]]
+    identifier = "archives"
+    name = "아카이브"
+    url = "/archives/"
+    weight = 40
+
+  [[menu.main]]
+    identifier = "search"
+    name = "검색"
+    url = "/search/"
+    weight = 50
+
+[taxonomies]
+  category = "categories"
+  tag = "tags"
+  series = "series"
+
+[outputs]
+  home = ["HTML", "RSS", "JSON"]
+
+[markup]
+  [markup.goldmark]
+    [markup.goldmark.renderer]
+      unsafe = true
+  [markup.highlight]
+    codeFences = true
+    guessSyntax = true
+    lineNos = true
+    style = "monokai"

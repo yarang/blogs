@@ -4,6 +4,8 @@ date = 2026-02-21T20:40:00+09:00
 draft = false
 tags = ["llm", "prompt-engineering", "ai"]
 categories = ["AI"]
+ShowToc = true
+TocOpen = true
 +++
 
 ## 들어가며

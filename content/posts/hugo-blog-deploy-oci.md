@@ -4,6 +4,8 @@ date = 2026-02-21T00:00:00+09:00
 draft = false
 tags = ["hugo", "oci", "github-actions", "devops"]
 categories = ["Infrastructure"]
+ShowToc = true
+TocOpen = true
 +++
 
 ## 개요
@@ -31,7 +33,7 @@ https://blog.fcoinfup.com
 | 구성 요소 | 기술 |
 |-----------|------|
 | 정적 사이트 생성기 | Hugo |
-| 테마 | Ananke |
+| 테마 | PaperMod |
 | CI/CD | GitHub Actions |
 | 서버 | OCI Free Tier (ARM) |
 | 웹 서버 | Nginx |
@@ -99,4 +101,4 @@ git push
 
 - [Hugo 공식 문서](https://gohugo.io/)
 - [GitHub Actions 문서](https://docs.github.com/actions)
-- [Ananke 테마](https://github.com/theNewDynamic/gohugo-theme-ananke)
+- [PaperMod 테마](https://github.com/adityatelange/hugo-PaperMod)
