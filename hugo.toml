@@ -1,0 +1,8 @@
+baseURL = 'https://blog.fcoinfup.com/'
+languageCode = 'ko-kr'
+title = "Yarang's Tech Lair"
+theme = 'ananke'
+
+[params]
+  author = 'yarang'
+  description = 'Tech blog for AI and Developer'

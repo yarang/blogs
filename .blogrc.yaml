@@ -1,0 +1,22 @@
+# Blog Configuration
+# 공개 설정 - Git에 커밋 가능
+
+server:
+  host: oci-yarang-ec1.fcoinfup.com
+  user: ubuntu
+  deploy_path: /var/www/blog
+
+blog:
+  url: https://blog.fcoinfup.com
+  title: "Yarang's Tech Lair"
+  author: yarang
+  description: Tech blog for AI and Developer
+  language: ko-kr
+
+deploy:
+  ssh_key_path: ~/.ssh/blog_deploy
+  github_secrets:
+    - OCI_HOST
+    - OCI_USER
+    - OCI_DEPLOY_PATH
+    - SSH_PRIVATE_KEY
