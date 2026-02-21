@@ -1,0 +1,10 @@
+{
+  "mcpServers": {
+    "blog-manager": {
+      "command": "python3",
+      "args": [".claude/mcp_server.py"],
+      "cwd": "/Users/yarang/workspaces/agent_dev/blogs",
+      "env": {}
+    }
+  }
+}
