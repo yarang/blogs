@@ -1,54 +1,24 @@
-# Claude Code에 MCP 서버 설치 가이드
+# Claude Code CLI용 MCP 서버 설치 가이드
 
-## 1. 사전 요구사항
+## 설치
 
-- Python 3.10+
-- Git
-- Claude Desktop 앱
-
-## 2. 설치 단계
-
-### Step 1: 저장소 클론
+### 1. 의존성 설치
 
 ```bash
-cd ~/workspaces
-git clone https://github.com/yarang/blogs.git
-cd blogs
-```
-
-### Step 2: MCP 의존성 설치
-
-```bash
-cd .claude
+cd /Users/yarang/workspaces/agent_dev/blogs/.claude
 pip install -r requirements.txt
 ```
 
-### Step 3: Claude Desktop 설정
+### 2. MCP 설정 파일 확인
 
-**macOS:**
-```bash
-# 설정 파일 열기
-open -e ~/Library/Application\ Support/Claude/claude_desktop_config.json
-```
-
-**Windows:**
-```bash
-notepad %APPDATA%\Claude\claude_desktop_config.json
-```
-
-**Linux:**
-```bash
-nano ~/.config/Claude/claude_desktop_config.json
-```
-
-### Step 4: 설정 내용 추가
+프로젝트 루트에 `.mcp.json` 파일이 있어야 합니다:
 
 ```json
 {
   "mcpServers": {
-    "blog-manager": {
+    "blog": {
       "command": "python3",
-      "args": ["/Users/yarang/workspaces/agent_dev/blogs/.claude/mcp_server.py"],
+      "args": [".claude/mcp_server.py"],
       "env": {
         "BLOG_ROOT": "/Users/yarang/workspaces/agent_dev/blogs"
       }
@@ -57,57 +27,84 @@ nano ~/.config/Claude/claude_desktop_config.json
 }
 ```
 
-> 경로를 본인 환경에 맞게 수정하세요.
+### 3. MCP 서버 승인
 
-### Step 5: Claude Desktop 재시작
+처음 실행 시 MCP 서버 승인 메시지가 표시됩니다. 승인하세요.
 
-Claude Desktop 앱을 완전히 종료하고 다시 실행합니다.
+## 사용법
 
-## 3. 확인
+### CLI에서 바로 사용
 
-Claude Desktop에서 다음과 같이 물어보세요:
+```bash
+# Claude Code CLI 실행
+cd /Users/yarang/workspaces/agent_dev/blogs
+claude
 
-```
-"사용 가능한 MCP 도구가 있어?"
-```
-
-또는 바로 사용:
-
-```
-"블로그 포스트 목록 보여줘"
+# 또는 직접 요청
+claude "블로그 포스트 목록 보여줘"
 ```
 
-## 4. 사용 예시
-
-### 포스트 작성
+### 사용 예시
 
 ```
+# 포스트 작성
 "Python 가상환경 설정법에 대한 블로그 포스트 작성해줘"
-```
 
-### 포스트 검색
-
-```
+# 포스트 검색
 "Docker 관련 포스트 검색해줘"
-```
 
-### Git 상태 확인
-
-```
+# Git 상태
 "블로그 Git 상태 확인해줘"
+
+# 원격 동기화
+"블로그 원격에서 최신 내용 가져와줘"
 ```
 
-## 5. 문제 해결
+## 제공 도구
+
+| 도구 | 설명 |
+|------|------|
+| `blog_create_post` | 포스트 생성 + Git 커밋/푸시 |
+| `blog_list_posts` | 포스트 목록 조회 |
+| `blog_get_post` | 특정 포스트 조회 |
+| `blog_delete_post` | 포스트 삭제 |
+| `blog_search_posts` | 포스트 검색 |
+| `blog_git_status` | Git 상태 확인 |
+| `blog_git_sync` | 원격 동기화 |
+
+## 워크플로우
+
+```
+1. claude "포스트 작성해줘"
+2. MCP 서버가 파일 생성
+3. 자동으로 git commit / push
+4. GitHub Actions 트리거
+5. 블로그 자동 배포 (1-2분)
+```
+
+## 다른 프로젝트에서 사용
+
+```bash
+# 다른 디렉토리에서
+cd /path/to/other-project
+
+# 블로그 MCP 사용
+claude "블로그에 새 포스트 작성해줘: ..."
+```
+
+> 참고: 다른 프로젝트에서도 `.mcp.json`에 블로그 MCP 설정이 있어야 합니다.
+
+## 문제 해결
 
 ### MCP 서버가 로드되지 않을 때
 
 ```bash
-# MCP 서버 직접 실행 테스트
+# MCP 서버 직접 테스트
 cd /Users/yarang/workspaces/agent_dev/blogs/.claude
 python3 mcp_server.py
 
 # 의존성 확인
-pip list | grep mcp
+pip show mcp
 ```
 
 ### Git 권한 문제
@@ -115,48 +112,22 @@ pip list | grep mcp
 ```bash
 # Git credential 설정
 git config --global credential.helper store
-
-# 또는 SSH 키 사용
-ssh-keygen -t ed25519 -C "your_email@example.com"
 ```
 
 ### 경로 문제
 
-설정 파일의 경로가 절대 경로인지 확인:
-- ❌ `./.claude/mcp_server.py`
-- ✅ `/Users/yarang/workspaces/agent_dev/blogs/.claude/mcp_server.py`
+`.mcp.json`의 경로가 프로젝트 루트에서 상대 경로인지 확인:
+- ✅ `.claude/mcp_server.py`
+- ❌ `/Users/.../mcp_server.py` (다른 프로젝트에서 문제)
 
-## 6. 여러 MCP 서버 사용
+## 파일 구조
 
-```json
-{
-  "mcpServers": {
-    "blog-manager": {
-      "command": "python3",
-      "args": ["/path/to/blogs/.claude/mcp_server.py"],
-      "env": {"BLOG_ROOT": "/path/to/blogs"}
-    },
-    "filesystem": {
-      "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-filesystem", "/path/to/allowed/dir"]
-    }
-  }
-}
 ```
-
-## 7. 환경 변수
-
-| 변수 | 설명 | 기본값 |
-|------|------|--------|
-| `BLOG_ROOT` | 블로그 저장소 경로 | `..` (상위 디렉토리) |
-
-## 8. 업데이트
-
-```bash
-cd /path/to/blogs
-git pull
-cd .claude
-pip install -r requirements.txt --upgrade
-
-# Claude Desktop 재시작
+blogs/
+├── .mcp.json              # MCP 서버 설정 (Claude Code CLI용)
+├── .claude/
+│   ├── mcp_server.py      # MCP 서버
+│   ├── requirements.txt   # 의존성
+│   └── INSTALL.md         # 이 파일
+└── content/posts/         # 블로그 포스트
 ```
