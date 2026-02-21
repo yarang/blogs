@@ -117,9 +117,10 @@ MCP Server가 API Server를 통해 블로그를 관리합니다.
 ```
 blogs/
 ├── .mcp.json                    # MCP 설정 (Block 1)
-├── .claude/
-│   ├── mcp_server.py           # MCP Server (Block 1)
-│   └── requirements.txt
+├── mcp_client/                  # MCP Client (Block 1)
+│   ├── mcp_blog_client.py      # MCP HTTP 클라이언트
+│   ├── pyproject.toml          # uv 패키지 설정
+│   └── README.md
 │
 ├── api_server/                  # API Server (Block 2)
 │   ├── main.py                 # FastAPI 엔드포인트
@@ -140,14 +141,25 @@ blogs/
 {
   "mcpServers": {
     "blog": {
-      "command": "python3",
-      "args": [".claude/mcp_server.py"],
+      "command": "uv",
+      "args": ["run", "--directory", "mcp_client", "python", "mcp_blog_client.py"],
       "env": {
-        "BLOG_API_URL": "https://api.blog.fcoinfup.com",
+        "BLOG_API_URL": "http://130.162.133.47",
         "BLOG_API_KEY": "your_api_key"
       }
     }
   }
+}
+```
+
+### Claude Code 설정 (~/.claude/settings.json)
+```json
+{
+  "env": {
+    "BLOG_API_URL": "http://130.162.133.47",
+    "BLOG_API_KEY": "your_api_key"
+  },
+  "enableAllProjectMcpServers": true
 }
 ```
 

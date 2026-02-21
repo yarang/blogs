@@ -1,0 +1,13 @@
+[project]
+name = "blog-mcp-client"
+version = "0.1.0"
+description = "MCP client for blog management"
+requires-python = ">=3.10"
+dependencies = [
+    "mcp>=1.0.0",
+    "httpx>=0.25.0",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"

@@ -1,10 +1,10 @@
 {
   "mcpServers": {
     "blog": {
-      "command": "python3",
-      "args": [".claude/mcp_server.py"],
+      "command": "uv",
+      "args": ["run", "--directory", "mcp_client", "python", "mcp_blog_client.py"],
       "env": {
-        "BLOG_API_URL": "https://api.blog.fcoinfup.com",
+        "BLOG_API_URL": "http://130.162.133.47",
         "BLOG_API_KEY": "YOUR_API_KEY_HERE"
       }
     }
