@@ -18,3 +18,13 @@ hugo_stats.json
 *.pem
 *.key
 deploy_key
+
+# API Server
+api_server/.env
+api_server/venv/
+api_server/__pycache__/
+*.pyc
+
+# Logs
+logs/
+*.log
