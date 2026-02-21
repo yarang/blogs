@@ -2,48 +2,82 @@
 
 Claude Code에서 블로그를 관리하기 위한 MCP 클라이언트입니다.
 
-## 설치
+## 다른 Claude Code에서 사용하기 (원격 설치)
 
-### 자동 설치
+한 줄로 설치:
 
 ```bash
-cd mcp_client
+curl -fsSL https://raw.githubusercontent.com/yarang/blogs/main/mcp_client/remote-install.sh | bash
+```
+
+또는 설치 경로 지정:
+
+```bash
+curl -fsSL https://raw.githubusercontent.com/yarang/blogs/main/mcp_client/remote-install.sh | bash -s -- ~/.blog-mcp
+```
+
+설치 후 프로젝트에 `.mcp.json` 복사:
+
+```bash
+cp ~/.blog-mcp-client/.mcp.json /your/project/.mcp.json
+```
+
+## 저장소에서 설치 (개발자)
+
+```bash
+git clone https://github.com/yarang/blogs.git
+cd blogs/mcp_client
 ./install.sh
 ```
 
-설치 스크립트가 다음을 수행합니다:
-1. uv 설치 (없는 경우)
-2. 의존성 설치 (mcp, httpx)
-3. API Key 입력
-4. .mcp.json 설정 업데이트
+## 수동 설정
 
-### 수동 설치
+### 1. 클라이언트 다운로드
 
 ```bash
-# 1. uv로 의존성 설치
-cd mcp_client
+mkdir -p ~/.blog-mcp-client
+cd ~/.blog-mcp-client
+
+# 클라이언트 스크립트 다운로드
+curl -O https://raw.githubusercontent.com/yarang/blogs/main/mcp_client/mcp_blog_client.py
+
+# uv로 의존성 설치
 uv venv
 uv pip install mcp httpx
+```
 
-# 2. .mcp.json 설정
-# 프로젝트 루트의 .mcp.json을 다음과 같이 수정:
+### 2. 프로젝트 .mcp.json 설정
+
+프로젝트 루트에 `.mcp.json` 생성:
+
+```json
 {
   "mcpServers": {
     "blog": {
-      "command": "/절대경로/mcp_client/.venv/bin/python",
-      "args": ["/절대경로/mcp_client/mcp_blog_client.py"],
+      "command": "/Users/사용자/.blog-mcp-client/.venv/bin/python",
+      "args": ["/Users/사용자/.blog-mcp-client/mcp_blog_client.py"],
       "env": {
         "BLOG_API_URL": "http://130.162.133.47",
-        "BLOG_API_KEY": "your_api_key"
+        "BLOG_API_KEY": "your_api_key_here"
       }
     }
   }
 }
 ```
 
+### 3. Claude Code 설정
+
+`~/.claude/settings.json`에 추가:
+
+```json
+{
+  "enableAllProjectMcpServers": true
+}
+```
+
 ## API Key 발급
 
-블로그 관리자에게 API Key를 요청하세요.
+블로그 관리자(yarang)에게 API Key를 요청하세요.
 
 ## 사용 가능한 도구
 
@@ -58,8 +92,6 @@ uv pip install mcp httpx
 | `blog_status` | 서버 상태 확인 |
 
 ## 사용 예시
-
-Claude Code에서 다음과 같이 사용할 수 있습니다:
 
 ```
 블로그에 새 포스트 작성해줘.
@@ -81,8 +113,8 @@ Claude Code에서 다음과 같이 사용할 수 있습니다:
 ```
 mcp_client/
 ├── mcp_blog_client.py   # MCP 클라이언트
+├── install.sh           # 로컬 설치 스크립트
+├── remote-install.sh    # 원격 설치 스크립트
 ├── pyproject.toml       # 패키지 설정
-├── install.sh           # 설치 스크립트
-├── .venv/               # 가상환경 (설치 후 생성)
 └── README.md            # 이 파일
 ```
