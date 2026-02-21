@@ -4,7 +4,8 @@
       "command": "python3",
       "args": [".claude/mcp_server.py"],
       "env": {
-        "BLOG_ROOT": "/Users/yarang/workspaces/agent_dev/blogs"
+        "BLOG_API_URL": "https://api.blog.fcoinfup.com",
+        "BLOG_API_KEY": "YOUR_API_KEY_HERE"
       }
     }
   }
