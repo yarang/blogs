@@ -52,7 +52,7 @@ theme = 'stack'
 [[languages.ko.menu.main]]
   identifier = "posts"
   name = "포스트"
-  url = "/posts/"
+  url = "/post/"
   weight = 10
 
 [[languages.ko.menu.main]]
@@ -83,7 +83,7 @@ theme = 'stack'
 [[languages.en.menu.main]]
   identifier = "posts"
   name = "Posts"
-  url = "/posts/"
+  url = "/post/"
   weight = 10
 
 [[languages.en.menu.main]]
@@ -120,7 +120,7 @@ theme = 'stack'
         icon = "brand-github"
 
 # Parameters
-mainSections = ["posts"]
+mainSections = ["post"]
 rssFullContent = true
 
 [sidebar]
