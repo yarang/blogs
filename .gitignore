@@ -28,3 +28,6 @@ api_server/__pycache__/
 # Logs
 logs/
 *.log
+
+# MCP client venv
+mcp_client/.venv/

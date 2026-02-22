@@ -1,7 +1,19 @@
 baseURL = 'https://blog.fcoinfup.com/'
-languageCode = 'ko-kr'
+languageCode = 'ko'
+defaultContentLanguage = 'ko'
+defaultContentLanguageInSubdir = true
 title = "Yarang's Tech Lair"
 theme = 'PaperMod'
+
+[languages.ko]
+  title = "Yarang's Tech Lair"
+  languageName = "한국어"
+  weight = 1
+
+[languages.en]
+  title = "Yarang's Tech Lair"
+  languageName = "English"
+  weight = 2
 
 [pagination]
   pagerSize = 10
@@ -20,33 +32,65 @@ theme = 'PaperMod'
   UseHugoToc = true
   disableThemeToggle = true
 
-  [params.profileMode]
-    enabled = true
-    title = "Yarang's Tech Lair"
-    subtitle = "AI와 개발에 대한 기술 블로그"
-    # imageUrl = "/images/profile.png"
-    # imageWidth = 120
-    # imageHeight = 120
+[languages.ko.params]
+  description = "Tech blog for AI and Developer"
+  profileModeEnabled = true
 
-    [[params.profileMode.buttons]]
-      name = "포스트"
-      url = "/posts/"
+[languages.ko.params.profileMode]
+  enabled = true
+  title = "Yarang's Tech Lair"
+  subtitle = "AI와 개발에 대한 기술 블로그"
+  # imageUrl = "/images/profile.png"
+  # imageWidth = 120
+  # imageHeight = 120
 
-    [[params.profileMode.buttons]]
-      name = "카테고리"
-      url = "/categories/"
+  [[languages.ko.params.profileMode.buttons]]
+    name = "포스트"
+    url = "/posts/"
 
-    [[params.profileMode.buttons]]
-      name = "태그"
-      url = "/tags/"
+  [[languages.ko.params.profileMode.buttons]]
+    name = "카테고리"
+    url = "/categories/"
 
-    [[params.profileMode.buttons]]
-      name = "검색"
-      url = "/search/"
+  [[languages.ko.params.profileMode.buttons]]
+    name = "태그"
+    url = "/tags/"
 
-  [[params.socialIcons]]
-    name = "github"
-    url = "https://github.com/yarang"
+  [[languages.ko.params.profileMode.buttons]]
+    name = "검색"
+    url = "/search/"
+
+[languages.en.params]
+  description = "Tech blog for AI and Developer"
+  profileModeEnabled = true
+
+[languages.en.params.profileMode]
+  enabled = true
+  title = "Yarang's Tech Lair"
+  subtitle = "Tech blog about AI and Development"
+  # imageUrl = "/images/profile.png"
+  # imageWidth = 120
+  # imageHeight = 120
+
+  [[languages.en.params.profileMode.buttons]]
+    name = "Posts"
+    url = "/posts/"
+
+  [[languages.en.params.profileMode.buttons]]
+    name = "Categories"
+    url = "/categories/"
+
+  [[languages.en.params.profileMode.buttons]]
+    name = "Tags"
+    url = "/tags/"
+
+  [[languages.en.params.profileMode.buttons]]
+    name = "Search"
+    url = "/search/"
+
+[[params.socialIcons]]
+  name = "github"
+  url = "https://github.com/yarang"
 
 [params.editPost]
   URL = "https://github.com/yarang/blogs/tree/main/content"
@@ -59,36 +103,67 @@ theme = 'PaperMod'
     pc = 2
     mobile = 1
 
-[menu]
-  [[menu.main]]
-    identifier = "posts"
-    name = "포스트"
-    url = "/posts/"
-    weight = 10
+# Korean Menu
+[[languages.ko.menu.main]]
+  identifier = "posts"
+  name = "포스트"
+  url = "/posts/"
+  weight = 10
 
-  [[menu.main]]
-    identifier = "categories"
-    name = "카테고리"
-    url = "/categories/"
-    weight = 20
+[[languages.ko.menu.main]]
+  identifier = "categories"
+  name = "카테고리"
+  url = "/categories/"
+  weight = 20
 
-  [[menu.main]]
-    identifier = "tags"
-    name = "태그"
-    url = "/tags/"
-    weight = 30
+[[languages.ko.menu.main]]
+  identifier = "tags"
+  name = "태그"
+  url = "/tags/"
+  weight = 30
 
-  [[menu.main]]
-    identifier = "archives"
-    name = "아카이브"
-    url = "/archives/"
-    weight = 40
+[[languages.ko.menu.main]]
+  identifier = "archives"
+  name = "아카이브"
+  url = "/archives/"
+  weight = 40
 
-  [[menu.main]]
-    identifier = "search"
-    name = "검색"
-    url = "/search/"
-    weight = 50
+[[languages.ko.menu.main]]
+  identifier = "search"
+  name = "검색"
+  url = "/search/"
+  weight = 50
+
+# English Menu
+[[languages.en.menu.main]]
+  identifier = "posts"
+  name = "Posts"
+  url = "/posts/"
+  weight = 10
+
+[[languages.en.menu.main]]
+  identifier = "categories"
+  name = "Categories"
+  url = "/categories/"
+  weight = 20
+
+[[languages.en.menu.main]]
+  identifier = "tags"
+  name = "Tags"
+  url = "/tags/"
+  weight = 30
+
+[[languages.en.menu.main]]
+  identifier = "archives"
+  name = "Archives"
+  url = "/archives/"
+  weight = 40
+
+[[languages.en.menu.main]]
+  identifier = "search"
+  name = "Search"
+  url = "/search/"
+  weight = 50
 
 [taxonomies]
   category = "categories"

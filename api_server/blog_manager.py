@@ -21,6 +21,9 @@ BLOG_REPO_URL = os.getenv("BLOG_REPO_URL", "https://github.com/yarang/blogs.git"
 BLOG_REPO_PATH = Path(os.getenv("BLOG_REPO_PATH", "/var/www/blog-repo"))
 CONTENT_DIR = BLOG_REPO_PATH / "content" / "posts"
 
+# 지원하는 언어
+SUPPORTED_LANGUAGES = ["ko", "en"]
+
 # 동기화 락
 _lock = threading.Lock()
 
@@ -133,18 +136,25 @@ class BlogManager:
         if not CONTENT_DIR.exists():
             self.git.ensure_repo()
 
-    def _generate_filename(self, title: str) -> str:
+    def _get_content_dir(self, language: str = "ko") -> Path:
+        """언어별 컨텐츠 디렉토리 반환"""
+        if language not in SUPPORTED_LANGUAGES:
+            raise ValueError(f"Unsupported language: {language}. Supported: {SUPPORTED_LANGUAGES}")
+        return BLOG_REPO_PATH / "content" / language / "posts"
+
+    def _generate_filename(self, title: str, language: str = "ko") -> str:
         """파일명 생성"""
+        content_dir = self._get_content_dir(language)
         today = datetime.now().strftime("%Y-%m-%d")
         slug = re.sub(r'[^\w\s-]', '', title.lower())
         slug = re.sub(r'[\s]+', '-', slug)[:50]
 
-        existing = list(CONTENT_DIR.glob(f"{today}-*.md"))
+        existing = list(content_dir.glob(f"{today}-*.md"))
         num = len(existing) + 1
 
         while True:
             filename = f"{today}-{num:03d}-{slug}.md"
-            if not (CONTENT_DIR / filename).exists():
+            if not (content_dir / filename).exists():
                 return filename
             num += 1
 
@@ -161,16 +171,25 @@ class BlogManager:
         tags: List[str] = None,
         categories: List[str] = None,
         draft: bool = False,
-        auto_push: bool = True
+        auto_push: bool = True,
+        language: str = "ko"
     ) -> Dict:
         """포스트 생성"""
         with _lock:
+            # 언어 유효성 검사
+            if language not in SUPPORTED_LANGUAGES:
+                return {
+                    "success": False,
+                    "error": f"Unsupported language: {language}. Supported: {SUPPORTED_LANGUAGES}"
+                }
+
             # 동기화
             self.git.pull()
 
             tags = tags or []
             categories = categories or ["Development"]
-            filename = self._generate_filename(title)
+            content_dir = self._get_content_dir(language)
+            filename = self._generate_filename(title, language)
 
             front_matter = f'''+++
 title = "{title}"
@@ -184,14 +203,17 @@ TocOpen = true
 
 {content}'''
 
-            CONTENT_DIR.mkdir(parents=True, exist_ok=True)
-            filepath = CONTENT_DIR / filename
+            content_dir.mkdir(parents=True, exist_ok=True)
+            filepath = content_dir / filename
             filepath.write_text(front_matter, encoding="utf-8")
+
+            relative_path = f"content/{language}/posts/{filename}"
 
             result = {
                 "success": True,
                 "filename": filename,
-                "path": f"content/posts/{filename}",
+                "language": language,
+                "path": relative_path,
                 "message": f"포스트 생성: {filename}"
             }
 
@@ -199,68 +221,147 @@ TocOpen = true
             if auto_push:
                 git_result = self.git.commit_and_push(
                     f"Add post: {title}",
-                    [result["path"]]
+                    [relative_path]
                 )
                 result["git"] = git_result
 
             return result
 
-    def list_posts(self, limit: int = 20, offset: int = 0) -> Dict:
+    def list_posts(self, limit: int = 20, offset: int = 0, language: str = None) -> Dict:
         """포스트 목록"""
         self.git.pull()
 
         posts = []
-        for f in sorted(CONTENT_DIR.glob("*.md"), reverse=True):
-            try:
-                content = f.read_text(encoding="utf-8")
-                title = "Unknown"
-                for line in content.split("\n")[1:10]:
-                    if line.startswith('title = '):
-                        title = line.split('"')[1]
-                        break
-                posts.append({"filename": f.name, "title": title})
-            except:
-                pass
+
+        # 언어 필터링
+        if language:
+            if language not in SUPPORTED_LANGUAGES:
+                return {"error": f"Unsupported language: {language}", "posts": [], "total": 0}
+            content_dirs = [self._get_content_dir(language)]
+        else:
+            content_dirs = [self._get_content_dir(lang) for lang in SUPPORTED_LANGUAGES]
+
+        for content_dir in content_dirs:
+            if not content_dir.exists():
+                continue
+
+            for f in sorted(content_dir.glob("*.md"), reverse=True):
+                try:
+                    content = f.read_text(encoding="utf-8")
+                    title = "Unknown"
+                    for line in content.split("\n")[1:10]:
+                        if line.startswith('title = '):
+                            title = line.split('"')[1]
+                            break
+
+                    # 언어 감지
+                    lang = f.parent.parent.name  # ko or en
+
+                    posts.append({
+                        "filename": f.name,
+                        "title": title,
+                        "language": lang
+                    })
+                except:
+                    pass
 
         return {"posts": posts[offset:offset+limit], "total": len(posts)}
 
-    def get_post(self, filename: str) -> Dict:
+    def get_post(self, filename: str, language: str = None) -> Dict:
         """포스트 조회"""
-        filepath = CONTENT_DIR / filename
+        # 언어가 지정되면 해당 언어 디렉토리에서 검색
+        if language:
+            if language not in SUPPORTED_LANGUAGES:
+                return {"error": f"Unsupported language: {language}"}
+            filepath = self._get_content_dir(language) / filename
+        else:
+            # 언어가 지정되지 않으면 모든 언어 디렉토리에서 검색
+            filepath = None
+            for lang in SUPPORTED_LANGUAGES:
+                path = self._get_content_dir(lang) / filename
+                if path.exists():
+                    filepath = path
+                    break
+
+            if not filepath:
+                return {"error": "파일 없음"}
+
         if not filepath.exists():
             return {"error": "파일 없음"}
-        return {"filename": filename, "content": filepath.read_text(encoding="utf-8")}
+        return {
+            "filename": filename,
+            "content": filepath.read_text(encoding="utf-8"),
+            "language": language or filepath.parent.parent.name
+        }
 
-    def update_post(self, filename: str, content: str = None, auto_push: bool = True) -> Dict:
+    def update_post(self, filename: str, content: str = None, auto_push: bool = True, language: str = None) -> Dict:
         """포스트 수정"""
         with _lock:
-            filepath = CONTENT_DIR / filename
+            # 언어가 지정되면 해당 언어 디렉토리에서 검색
+            if language:
+                if language not in SUPPORTED_LANGUAGES:
+                    return {"success": False, "error": f"Unsupported language: {language}"}
+                filepath = self._get_content_dir(language) / filename
+            else:
+                # 언어가 지정되지 않으면 모든 언어 디렉토리에서 검색
+                filepath = None
+                for lang in SUPPORTED_LANGUAGES:
+                    path = self._get_content_dir(lang) / filename
+                    if path.exists():
+                        filepath = path
+                        break
+
+                if not filepath:
+                    return {"success": False, "error": "파일 없음"}
+
             if not filepath.exists():
                 return {"success": False, "error": "파일 없음"}
 
             if content:
                 filepath.write_text(content, encoding="utf-8")
 
-            result = {"success": True, "filename": filename}
+            lang = filepath.parent.parent.name
+            relative_path = f"content/{lang}/posts/{filename}"
+
+            result = {"success": True, "filename": filename, "language": lang}
 
             if auto_push:
                 result["git"] = self.git.commit_and_push(
                     f"Update post: {filename}",
-                    [f"content/posts/{filename}"]
+                    [relative_path]
                 )
 
             return result
 
-    def delete_post(self, filename: str, auto_push: bool = True) -> Dict:
+    def delete_post(self, filename: str, auto_push: bool = True, language: str = None) -> Dict:
         """포스트 삭제"""
         with _lock:
-            filepath = CONTENT_DIR / filename
+            # 언어가 지정되면 해당 언어 디렉토리에서 검색
+            if language:
+                if language not in SUPPORTED_LANGUAGES:
+                    return {"success": False, "error": f"Unsupported language: {language}"}
+                filepath = self._get_content_dir(language) / filename
+            else:
+                # 언어가 지정되지 않으면 모든 언어 디렉토리에서 검색
+                filepath = None
+                for lang in SUPPORTED_LANGUAGES:
+                    path = self._get_content_dir(lang) / filename
+                    if path.exists():
+                        filepath = path
+                        break
+
+                if not filepath:
+                    return {"success": False, "error": "파일 없음"}
+
             if not filepath.exists():
                 return {"success": False, "error": "파일 없음"}
 
+            lang = filepath.parent.parent.name
+            relative_path = f"content/{lang}/posts/{filename}"
+
             filepath.unlink()
 
-            result = {"success": True, "message": "삭제 완료"}
+            result = {"success": True, "message": "삭제 완료", "language": lang}
 
             if auto_push:
                 result["git"] = self.git.commit_and_push(
