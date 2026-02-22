@@ -2,106 +2,51 @@ baseURL = 'https://blog.fcoinfup.com/'
 languageCode = 'ko'
 defaultContentLanguage = 'ko'
 defaultContentLanguageInSubdir = true
+hasCJKLanguage = true
 title = "Yarang's Tech Lair"
-theme = 'PaperMod'
-
-[languages.ko]
-  title = "Yarang's Tech Lair"
-  languageName = "한국어"
-  weight = 1
-
-[languages.en]
-  title = "Yarang's Tech Lair"
-  languageName = "English"
-  weight = 2
+theme = 'stack'
 
 [pagination]
-  pagerSize = 10
+    pagerSize = 10
 
-[params]
-  env = "production"
-  description = "Tech blog for AI and Developer"
-  author = "yarang"
-  defaultTheme = "light"
-  ShowReadingTime = true
-  ShowShareButtons = true
-  ShowPostNavLinks = true
-  ShowBreadCrumbs = true
-  ShowCodeCopyButtons = true
-  ShowRssButtonInSectionTermList = true
-  UseHugoToc = true
-  disableThemeToggle = true
+[permalinks]
+    post = "/:slug/"
+    page = "/:slug/"
 
-[languages.ko.params]
-  description = "Tech blog for AI and Developer"
-  profileModeEnabled = true
+[taxonomies]
+  category = "categories"
+  tag = "tags"
+  series = "series"
 
-[languages.ko.params.profileMode]
-  enabled = true
+[markup]
+  [markup.goldmark]
+    [markup.goldmark.renderer]
+      unsafe = true
+  [markup.highlight]
+    codeFences = true
+    guessSyntax = true
+    lineNos = false
+    style = "github"
+
+# Korean Language
+[languages.ko]
+  languageName = "한국어"
   title = "Yarang's Tech Lair"
-  subtitle = "AI와 개발에 대한 기술 블로그"
-  # imageUrl = "/images/profile.png"
-  # imageWidth = 120
-  # imageHeight = 120
+  weight = 1
 
-  [[languages.ko.params.profileMode.buttons]]
-    name = "포스트"
-    url = "/posts/"
+  [languages.ko.params]
+    description = "AI와 개발에 대한 기술 블로그"
+    sidebar = { subtitle = "AI와 개발에 대한 기술 블로그" }
 
-  [[languages.ko.params.profileMode.buttons]]
-    name = "카테고리"
-    url = "/categories/"
-
-  [[languages.ko.params.profileMode.buttons]]
-    name = "태그"
-    url = "/tags/"
-
-  [[languages.ko.params.profileMode.buttons]]
-    name = "검색"
-    url = "/search/"
-
-[languages.en.params]
-  description = "Tech blog for AI and Developer"
-  profileModeEnabled = true
-
-[languages.en.params.profileMode]
-  enabled = true
+# English Language
+[languages.en]
+  languageName = "English"
   title = "Yarang's Tech Lair"
-  subtitle = "Tech blog about AI and Development"
-  # imageUrl = "/images/profile.png"
-  # imageWidth = 120
-  # imageHeight = 120
+  weight = 2
 
-  [[languages.en.params.profileMode.buttons]]
-    name = "Posts"
-    url = "/posts/"
-
-  [[languages.en.params.profileMode.buttons]]
-    name = "Categories"
-    url = "/categories/"
-
-  [[languages.en.params.profileMode.buttons]]
-    name = "Tags"
-    url = "/tags/"
-
-  [[languages.en.params.profileMode.buttons]]
-    name = "Search"
-    url = "/search/"
-
-[[params.socialIcons]]
-  name = "github"
-  url = "https://github.com/yarang"
-
-[params.editPost]
-  URL = "https://github.com/yarang/blogs/tree/main/content"
-  Text = "Suggest Changes"
-  appendFilePath = true
-
-# 포스트 목록 카드 뷰 설정
-[params.home]
-  [params.home.columns]
-    pc = 2
-    mobile = 1
+  [languages.en.params]
+    description = "Tech blog about AI and Development"
+    sidebar = { subtitle = "Tech blog about AI and Development" }
 
 # Korean Menu
 [[languages.ko.menu.main]]
@@ -165,20 +110,40 @@ theme = 'PaperMod'
   url = "/search/"
   weight = 50
 
-[taxonomies]
-  category = "categories"
-  tag = "tags"
-  series = "series"
+# Social Icons
+[[social]]
+    identifier = "github"
+    name = "GitHub"
+    url = "https://github.com/yarang"
+
+    [social.params]
+        icon = "brand-github"
+
+# Parameters
+mainSections = ["posts"]
+rssFullContent = true
+
+[sidebar]
+    emoji    = ""
+    subtitle = "AI와 개발에 대한 기술 블로그"
+
+[article]
+    license = { enabled = false }
+
+[widgets]
+    homepage = [
+        { type = "search" },
+        { type = "archives", params = { limit = 5 } },
+        { type = "categories", params = { limit = 10 } },
+        { type = "tag-cloud", params = { limit = 10 } },
+    ]
+    page     = [{ type = "toc" }]
+
+[comments]
+    enabled  = false
+
+[cookies]
+    enabled = false
 
 [outputs]
   home = ["HTML", "RSS", "JSON"]
-
-[markup]
-  [markup.goldmark]
-    [markup.goldmark.renderer]
-      unsafe = true
-  [markup.highlight]
-    codeFences = true
-    guessSyntax = true
-    lineNos = false
-    style = "github"
