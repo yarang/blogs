@@ -19,7 +19,7 @@ logger = logging.getLogger(__name__)
 # 설정
 BLOG_REPO_URL = os.getenv("BLOG_REPO_URL", "https://github.com/yarang/blogs.git")
 BLOG_REPO_PATH = Path(os.getenv("BLOG_REPO_PATH", "/var/www/blog-repo"))
-CONTENT_DIR = BLOG_REPO_PATH / "content" / "posts"
+CONTENT_DIR = BLOG_REPO_PATH / "content" / "post"
 
 # 지원하는 언어
 SUPPORTED_LANGUAGES = ["ko", "en"]
@@ -140,7 +140,7 @@ class BlogManager:
         """언어별 컨텐츠 디렉토리 반환"""
         if language not in SUPPORTED_LANGUAGES:
             raise ValueError(f"Unsupported language: {language}. Supported: {SUPPORTED_LANGUAGES}")
-        return BLOG_REPO_PATH / "content" / language / "posts"
+        return BLOG_REPO_PATH / "content" / language / "post"
 
     def _generate_filename(self, title: str, language: str = "ko") -> str:
         """파일명 생성"""
@@ -207,7 +207,7 @@ TocOpen = true
             filepath = content_dir / filename
             filepath.write_text(front_matter, encoding="utf-8")
 
-            relative_path = f"content/{language}/posts/{filename}"
+            relative_path = f"content/{language}/post/{filename}"
 
             result = {
                 "success": True,
@@ -321,7 +321,7 @@ TocOpen = true
                 filepath.write_text(content, encoding="utf-8")
 
             lang = filepath.parent.parent.name
-            relative_path = f"content/{lang}/posts/{filename}"
+            relative_path = f"content/{lang}/post/{filename}"
 
             result = {"success": True, "filename": filename, "language": lang}
 
@@ -357,7 +357,7 @@ TocOpen = true
                 return {"success": False, "error": "파일 없음"}
 
             lang = filepath.parent.parent.name
-            relative_path = f"content/{lang}/posts/{filename}"
+            relative_path = f"content/{lang}/post/{filename}"
 
             filepath.unlink()
 
