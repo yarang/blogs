@@ -69,7 +69,6 @@ blogs/
 │   ├── ko/post/          # 한국어 포스트
 │   └── en/post/          # 영어 포스트
 ├── themes/stack/         # Hugo 테마
-├── mcp_client/           # MCP 클라이언트
 └── .github/workflows/    # GitHub Actions
 ```
 
@@ -81,6 +80,10 @@ blog-api-server/
 ├── translator.py         # LLM 번역
 ├── auth.py               # API Key 인증
 ├── git_handler.py        # Git 작업
+├── mcp_client/           # MCP 클라이언트
+│   ├── mcp_blog_client.py
+│   ├── install.sh
+│   └── remote-install.sh
 └── requirements.txt      # 의존성
 ```
 

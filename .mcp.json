@@ -1,8 +1,8 @@
 {
   "mcpServers": {
     "blog": {
-      "command": "/Users/yarang/workspaces/agent_dev/blogs/mcp_client/.venv/bin/python",
-      "args": ["/Users/yarang/workspaces/agent_dev/blogs/mcp_client/mcp_blog_client.py"],
+      "command": "/Users/yarang/workspaces/agent_dev/blog-api-server/mcp_client/.venv/bin/python",
+      "args": ["/Users/yarang/workspaces/agent_dev/blog-api-server/mcp_client/mcp_blog_client.py"],
       "env": {
         "BLOG_API_URL": "http://130.162.133.47",
         "BLOG_API_KEY": "blog_iNIfIH98pjX49OeS_gReP-ieadtHT8JZkI-m95sM5i4"
