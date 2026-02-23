@@ -1,7 +1,7 @@
 baseURL = 'https://blog.fcoinfup.com/'
 languageCode = 'ko'
 defaultContentLanguage = 'ko'
-defaultContentLanguageInSubdir = true
+defaultContentLanguageInSubdir = false
 hasCJKLanguage = true
 title = "Yarang's Tech Lair"
 theme = 'stack'
