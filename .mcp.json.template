@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "blog": {
+      "command": "/path/to/blog-api-server/mcp_client/.venv/bin/python",
+      "args": ["/path/to/blog-api-server/mcp_client/mcp_blog_client.py"],
+      "env": {
+        "BLOG_API_URL": "http://130.162.133.47",
+        "BLOG_API_KEY": "your_api_key_here"
+      }
+    }
+  }
+}

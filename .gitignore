@@ -31,3 +31,8 @@ logs/
 
 # MCP client venv
 mcp_client/.venv/
+
+# Security: MCP config with API keys
+.mcp.json
+.mcp.json.local
+.claude/settings.local.json
