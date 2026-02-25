@@ -10,7 +10,7 @@ theme = 'stack'
     pagerSize = 10
 
 [permalinks]
-    post = "/:slug/"
+    post = "/post/:slug/"
     page = "/:slug/"
 
 [taxonomies]
