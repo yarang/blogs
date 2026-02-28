@@ -1,9 +1,13 @@
----
-title: "Discord Gateway MCP 아키텍처 설계"
-date: 2026-03-01
-categories: ["Development", "Architecture"]
-tags: ["discord", "mcp", "fastapi", "claude-code", "user-comm"]
----
++++
+title = "Discord Gateway MCP 아키텍처 설계"
+slug = "discord-gateway-mcp-architecture-design"
+date = 2026-03-01T01:13:00+09:00
+draft = false
+categories = ["Development", "Architecture"]
+tags = ["discord", "mcp", "fastapi", "claude-code", "user-comm"]
+ShowToc = true
+TocOpen = true
++++
 
 Claude Code 팀에서 Discord를 통한 사용자 소통을 위해 Discord Gateway Service를 설계했다. 이 글에서는 주요 아키텍처 결정 사항과 user_comm Agent 설계를 정리한다.
 
