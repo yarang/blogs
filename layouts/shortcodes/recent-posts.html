@@ -1,0 +1,28 @@
+{{ $posts := where .Site.RegularPages "Type" "post" }}
+{{ $posts = first 5 $posts }}
+<ul class="recent-posts">
+{{ range $posts }}
+<li>
+    <a href="{{ .Permalink }}">{{ .Title }}</a>
+    <span class="date">{{ .Date.Format "2006-01-02" }}</span>
+</li>
+{{ end }}
+</ul>
+
+<style>
+.recent-posts {
+    list-style: none;
+    padding: 0;
+}
+.recent-posts li {
+    margin: 0.5rem 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.recent-posts .date {
+    color: var(--body-text-color);
+    opacity: 0.6;
+    font-size: 0.9rem;
+}
+</style>
