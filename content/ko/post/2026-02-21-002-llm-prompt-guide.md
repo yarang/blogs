@@ -1,5 +1,6 @@
 +++
 title = "LLM 프롬프트 잘 작성하는 방법"
+slug = "2026-02-21-002-llm-prompt-guide"
 date = 2026-02-21T20:40:00+09:00
 draft = false
 tags = ["llm", "prompt-engineering", "ai"]

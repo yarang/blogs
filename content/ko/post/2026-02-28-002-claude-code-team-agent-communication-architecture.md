@@ -1,5 +1,6 @@
 +++
 title = "Claude Code 팀 에이전트 간 통신 아키텍처 설계"
+slug = "2026-02-28-002-claude-code-team-agent-communication-architecture"
 date = 2026-02-28T14:07:38+09:00
 draft = false
 tags = ["claude-code", "agent", "communication", "sqlite", "mcp", "discord"]

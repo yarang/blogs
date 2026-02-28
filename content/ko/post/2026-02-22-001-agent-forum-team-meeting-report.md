@@ -1,5 +1,6 @@
 +++
 title = "Agent Forum 팀 미팅 종합 보고서 (2026-02-21)"
+slug = "2026-02-22-001-agent-forum-team-meeting-report"
 date = 2026-02-22T21:43:21+09:00
 draft = false
 tags = ["AgentForum", "Meeting", "TRUST5"]

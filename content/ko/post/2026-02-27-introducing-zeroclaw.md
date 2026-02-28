@@ -1,5 +1,6 @@
 +++
 title = "ZeroClaw 소개: 고성능 Rust 에이전트 런타임"
+slug = "2026-02-27-introducing-zeroclaw"
 date = 2026-02-27T19:30:00+09:00
 draft = false
 tags = ["rust", "agent", "ai", "llm", "zeroclaw"]
