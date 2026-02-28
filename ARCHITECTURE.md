@@ -119,7 +119,57 @@ ANTHROPIC_API_KEY=sk-ant-xxx
 ```
 BLOG_API_URL=http://130.162.133.47
 BLOG_API_KEY=blog_xxx
+BLOG_CACHE_TTL=300  # 캐시 유효 시간 (초), 기본 5분
 ```
+
+---
+
+## MCP 서버 구현
+
+### CacheManager 클래스
+
+로컬 캐시 관리를 통해 불필요한 API 호출을 최소화합니다.
+
+```python
+class CacheManager:
+    """로컬 캐시 관리 - 불필요한 API 호출 최소화"""
+
+    def __init__(self, ttl: float = 300.0):
+        # ttl: 캐시 유효 시간 (초), 기본 5분
+
+    async def get(self, key: str) -> Optional[Dict]
+    async def set(self, key: str, value: Dict) -> None
+    async def invalidate(self, pattern: str = None) -> None
+    async def clear_read_cache(self) -> None  # 읽기 전용 캐시 삭제
+```
+
+### BlogAPIClient 클래스
+
+연결 풀링과 캐싱을 지원하는 HTTP 클라이언트입니다.
+
+```python
+class BlogAPIClient:
+    """API Server HTTP 클라이언트 (연결 풀링 + 캐싱 지원)"""
+
+    def __init__(self, base_url: str, api_key: str, cache_ttl: float = 300.0)
+    async def request(self, method: str, path: str, data: Dict = None,
+                     params: Dict = None, use_cache: bool = True,
+                     invalidate_cache: bool = False) -> Dict
+    async def invalidate_cache(self) -> None
+```
+
+### 캐싱 정책
+
+| 작업 | 캐싱 | 설명 |
+|------|------|------|
+| GET /posts | ✅ | 포스트 목록 캐싱 (TTL 5분) |
+| GET /posts/{filename} | ✅ | 포스트 조회 캐싱 |
+| GET /search | ✅ | 검색 결과 캐싱 |
+| GET /status | ✅ | 상태 조회 캐싱 |
+| POST /posts | ❌ | 생성 후 캐시 무효화 |
+| PUT /posts/{filename} | ❌ | 수정 후 캐시 무효화 |
+| DELETE /posts/{filename} | ❌ | 삭제 후 캐시 무효화 |
+| POST /sync | ❌ | 동기화 후 캐시 무효화 |
 
 ---
 
@@ -131,23 +181,29 @@ BLOG_API_KEY=blog_xxx
 - **문제**: 전역 `threading.Lock()`만 사용하여 멀티프로세스 환경에서 경쟁 조건 발생 가능
 - **위치**: `blog_manager.py:29`, `blog_manager.py:81`, `blog_manager.py:191`
 - **영향**: 여러 요청이 동시에 Git 작업을 시도할 때 충돌 가능
+- **진행 중**: `asyncio.Lock` 도입으로 개선 중
 
-#### 2. 검색 기능 버그
+#### 2. 검색 기능 버그 ✅ 해결됨
 - **문제**: `search_posts()`가 `CONTENT_DIR`(한국어)만 검색하여 영어 포스트가 검색되지 않음
 - **위치**: `blog_manager.py:393`
-- **해결**: 모든 언어 디렉토리를 검색하도록 수정 필요
+- **해결**: 모든 언어 디렉토리를 검색하도록 이미 구현됨
+- **테스트**: `test_search.py` 12개 테스트 케이스로 검증 완료
 
 ### 🟡 P1 - 확장성 문제
 
-#### 1. 매 요청마다 Git Pull 실행
+#### 1. 매 요청마다 Git Pull 실행 ⚡ 부분 개선됨
 - **문제**: `list_posts()`, `search_posts()`, `get_translation_status()` 등 호출 시마다 `git pull()` 실행
 - **위치**: `blog_manager.py:245`, `blog_manager.py:388`, `blog_manager.py:406`
 - **영향**: 불필요한 네트워크 호출, 지연 시간 증가 (최대 60초 타임아웃)
+- **해결**: MCP 클라이언트에 `CacheManager` 도입으로 API 호출 최적화 (TTL 5분)
+- **위치**: `.claude/mcp_server.py:25-71`
 
 #### 2. 파일 기반 검색 (O(n))
 - **문제**: 모든 파일을 읽어서 문자열 검색
 - **위치**: `blog_manager.py:386-402`
 - **영향**: 포스트가 100개 이상이 되면 성능 저하
+- **개선**: MCP 클라이언트 캐싱으로 반복 검색 최적화됨
+- **장기 계획**: Whoosh 또는 Meilisearch 도입 검토
 
 #### 3. 전역 인스턴스 의존
 - **문제**: `blog_manager`, `git_handler`, `translator`가 모듈 레벨 전역 인스턴스
@@ -173,19 +229,23 @@ BLOG_API_KEY=blog_xxx
 
 ## 개선 로드맵
 
-### 단기 (P0-P1) - 즉시 개선
+### 단기 (P0-P1) - 완료 및 진행 중
 
-1. **검색 버그 수정**
-   - 모든 언어 디렉토리 검색하도록 수정
+1. **검색 버그 수정** ✅ 완료
+   - 모든 언어 디렉토리 검색하도록 구현됨
+   - `test_search.py` 12개 테스트 케이스로 검증
    - 우선순위: P0
 
-2. **Git Pull 최적화**
-   - 주기적 백그라운드 sync 또는 캐싱 도입
-   - 마지막 sync 시간 추적하여 일정 시간 내면 skip
+2. **Git Pull 최적화** ⚡ 부분 완료
+   - MCP 클라이언트에 `CacheManager` 도입 (TTL 5분)
+   - 쓰기 작업 후 캐시 무효화 구현
+   - API 서버 쪽은 여전히 매 호출마다 git pull 실행
    - 우선순위: P1
 
-3. **파일 락 강화**
-   - `fcntl.flock()` 또는 Redis 기반 분산 락 도입
+3. **파일 락 강화** 🔄 진행 중
+   - MCP 클라이언트에 `asyncio.Lock` 도입
+   - API 서버는 여전히 `threading.Lock` 사용
+   - `fcntl.flock()` 또는 Redis 기반 분산 락 도입 필요
    - 우선순위: P1
 
 ### 중기 (P2) - 구조 개선
@@ -215,6 +275,35 @@ BLOG_API_KEY=blog_xxx
 3. **마이크로서비스 분리**
    - API 서버와 번역 서버 분리
    - 독립적 확장 가능
+
+---
+
+## 테스트
+
+### API 서버 테스트
+
+| 파일 | 설명 | 위치 |
+|------|------|------|
+| `test_search.py` | 다국어 검색 기능 테스트 | `/blog-api-server/test_search.py` |
+| `test_zai_api.py` | ZAI API 연결 테스트 | `/blog-api-server/test_zai_api.py` |
+
+### MCP 클라이언트 테스트
+
+| 파일 | 설명 | 위치 |
+|------|------|------|
+| `test_mcp_tools.py` | MCP 도구 테스트 | `/.claude/tests/test_mcp_tools.py` |
+| `test_client.py` | BlogAPIClient 테스트 | `/.claude/tests/test_client.py` |
+| `test_integration.py` | 통합 테스트 | `/.claude/tests/test_integration.py` |
+
+### 테스트 커버리지
+
+- ✅ 다국어 검색 (ko, en)
+- ✅ Relevance 정렬
+- ✅ 대소문자 무시 검색
+- ✅ 결과 구조 검증
+- ✅ 캐싱 동작
+- ✅ 연결 풀링
+- ✅ 에러 핸들링
 
 ---
 
