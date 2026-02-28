@@ -1,14 +1,11 @@
-+++
-title = "Discord Gateway MCP 아키텍처 설계"
-date = 2026-03-01T01:14:32+09:00
-draft = false
-tags = ["discord", "mcp", "fastapi", "claude-code"]
-categories = ["Development", "Architecture"]
-ShowToc = true
-TocOpen = true
-+++
+---
+title: "Discord Gateway MCP 아키텍처 설계"
+date: 2026-03-01
+categories: ["Development", "Architecture"]
+tags: ["discord", "mcp", "fastapi", "claude-code", "user-comm"]
+---
 
-Claude Code 팀에서 Discord를 통한 사용자 소통을 위해 Discord Gateway Service를 설계했다. 이 글에서는 주요 아키텍처 결정 사항을 정리한다.
+Claude Code 팀에서 Discord를 통한 사용자 소통을 위해 Discord Gateway Service를 설계했다. 이 글에서는 주요 아키텍처 결정 사항과 user_comm Agent 설계를 정리한다.
 
 ---
 
@@ -21,6 +18,7 @@ Claude Code 팀에서 Discord를 통한 사용자 소통을 위해 Discord Gatew
 | **Discord** | Bot, Channel, Thread | 사용자 인터페이스 |
 | **Gateway** | WebSocket, REST API, SSE | 메시지 라우팅 |
 | **MCP** | gcp-mcp, oci-mcp, db-mcp | 도구 실행 |
+| **user_comm** | Discord Agent | 사용자 소통 담당 |
 
 ### 메시지 흐름
 
@@ -36,26 +34,113 @@ flowchart LR
         SSE[SSE]
     end
 
-    subgraph MCPs["MCP Servers"]
+    subgraph Agents["Claude Code Team"]
+        UserComm[user_comm]
         GCP[gcp-mcp]
         OCI[oci-mcp]
         DB[db-mcp]
     end
 
     User -->|메시지| WS
-    WS --> API
+    WS --> UserComm
+    UserComm --> API
     API --> GCP
     API --> OCI
     API --> DB
-    GCP -->|응답| SSE
-    OCI -->|응답| SSE
-    DB -->|응답| SSE
-    SSE -->|브로드캐스트| User
+    GCP -->|응답| UserComm
+    OCI -->|응답| UserComm
+    DB -->|응답| UserComm
+    UserComm -->|브로드캐스트| SSE
+    SSE -->|알림| User
 ```
 
 ---
 
-## 2. Redis 없이 동작하는 가벼운 아키텍처
+## 2. user_comm Agent (사용자 소통 담당)
+
+### 역할 및 책임
+
+user_comm Agent는 Claude Code 팀의 멤버로서 Discord 채널을 통해 사용자와 소통하고 다른 agent들과 협업합니다.
+
+| 기능 | 설명 |
+|------|------|
+| **입력 수신** | Discord 메시지를 받아 적절한 agent에게 전달 |
+| **의견 요청** | 다른 agent의 요청으로 사용자 의견 질의 |
+| **알림/보고** | 시스템 상태, 경고, 리포트 전송 |
+| **팀 통신** | 다른 agent와 메시지 송수신 |
+
+### 내부 구조
+
+```mermaid
+flowchart TB
+    subgraph UserComm["user_comm Agent"]
+        DiscordBot["Discord Bot<br/>(discord.py)"]
+        Agent["UserCommAgent<br/>(메인 로직)"]
+        TeamComm["TeamCommunicator<br/>(agent 통신)"]
+    end
+
+    subgraph Discord["Discord API"]
+        Messages[Messages]
+        Buttons[Buttons/Views]
+        Threads[Threads]
+    end
+
+    subgraph Team["다른 Agents"]
+        GCP[gcp-mcp]
+        OCI[oci-mcp]
+        Alert[alert-mcp]
+    end
+
+    DiscordBot <--> Messages
+    DiscordBot <--> Buttons
+    DiscordBot <--> Threads
+    DiscordBot <--> Agent
+    Agent <--> TeamComm
+    TeamComm --> GCP
+    TeamComm --> OCI
+    TeamComm --> Alert
+```
+
+### 메시지 타입
+
+```python
+class MessageType(Enum):
+    TASK_REQUEST = "task_request"      # 작업 요청
+    NOTIFICATION = "notification"       # 알림
+    OPINION_REQUEST = "opinion_request" # 의견 요청
+    OPINION_RESPONSE = "opinion_response" # 의견 응답
+    STATUS_REPORT = "status_report"     # 상태 보고
+    ERROR = "error"                     # 에러
+```
+
+### 주요 기능 동작
+
+#### 입력 수신 (Discord → Agent)
+```
+사용자: "@gcp-monitor 서버 상태 확인"
+  → DiscordBot.on_message
+  → UserCommAgent._parse_command (target: gcp-monitor)
+  → TeamCommunicator.send_to_agent
+  → Discord: "gcp-monitor에게 요청을 전달했습니다."
+```
+
+#### 의견 요청 (Agent → Discord)
+```
+gcp-monitor: "디스크 정리할까요?" → user_comm
+  → DiscordBot.ask_opinion (버튼 또는 답장 대기)
+  → 사용자 응답
+  → TeamCommunicator.send_to_agent (응답 전달)
+```
+
+#### 알림/보고 (Agent → Discord)
+```
+oci-monitor: "디스크 92% 경고" → user_comm
+  → DiscordBot.send_message (Embed 형식)
+```
+
+---
+
+## 3. Redis 없이 동작하는 가벼운 아키텍처
 
 ### 왜 Redis를 제거했나?
 
@@ -96,7 +181,7 @@ flowchart TB
 
 ---
 
-## 3. MCP 선택 방식: 4단계 하이브리드
+## 4. MCP 선택 방식: 4단계 하이브리드
 
 ### 선택 우선순위
 
@@ -136,7 +221,7 @@ flowchart TD
 
 ---
 
-## 4. Thread Lock 규칙
+## 5. Thread Lock 규칙
 
 ### 락 동작 방식
 
@@ -191,7 +276,7 @@ POST /api/threads/123456/acquire
 
 ---
 
-## 5. MCP 도구 (8개)
+## 6. MCP 도구 (8개)
 
 ### 도구 목록
 
@@ -262,7 +347,7 @@ discord_acquire_thread(
 
 ---
 
-## 6. 파일 구조
+## 7. 파일 구조
 
 ```mermaid
 flowchart TB
@@ -272,6 +357,12 @@ flowchart TB
             WS["discord_ws.py<br/>WebSocket"]
             Lock["thread_lock.py<br/>Lock 매니저"]
             SSE["sse.py<br/>SSE 스트리밍"]
+        end
+
+        subgraph UserComm["user_comm/"]
+            Agent["agent.py<br/>메인 Agent"]
+            Bot["discord_bot.py<br/>Discord Bot"]
+            Team["team_comm.py<br/>팀 통신"]
         end
 
         subgraph MCP["discord_mcp/"]
@@ -285,7 +376,6 @@ flowchart TB
         subgraph Docs["docs/"]
             Strategy["MCP_SELECTION_STRATEGY.md"]
             Policy["MCP_ROUTING_POLICY.md"]
-            Deploy["OCI_DEPLOYMENT.md"]
         end
     end
 
@@ -293,6 +383,9 @@ flowchart TB
     Main --> Lock
     Main --> SSE
     WS <--> Server
+    WS <--> Bot
+    Agent --> Bot
+    Agent --> Team
 ```
 
 ### 디렉토리 설명
@@ -300,19 +393,26 @@ flowchart TB
 | 경로 | 설명 |
 |------|------|
 | `gateway/` | Gateway Service (FastAPI) |
+| `user_comm/` | 사용자 소통 Agent |
 | `discord_mcp/` | MCP Server (8개 도구) |
 | `mcp_shared/` | 공유 MCP 도구 |
 | `docs/` | 문서 |
 
 ---
 
-## 7. 실행 방법
+## 8. 실행 방법
 
 ### 로컬 실행
 
 ```bash
 # Gateway Service 시작
 uvicorn gateway.main:app --host 0.0.0.0 --port 8081
+
+# user_comm Agent 시작 (독립 모드)
+python main.py --standalone
+
+# user_comm Agent 시작 (팀 모드)
+python main.py --team server-monitor
 
 # 헬스체크
 curl http://localhost:8081/health
@@ -340,7 +440,7 @@ curl http://localhost:8081/health
 
 ---
 
-## 8. 로드맵
+## 9. 로드맵
 
 ```mermaid
 timeline
@@ -353,6 +453,7 @@ timeline
         MCP Server : 8개 도구
 
     section Phase 2 (진행중)
+        user_comm Agent : 사용자 소통 담당
         슬래시 커맨드 : /gcp, /oci
         채널별 MCP : 기본 MCP 설정
         키워드 감지 : 자동 인식
@@ -373,6 +474,7 @@ timeline
 
 ### Phase 2: 진행 예정
 
+- [ ] user_comm Agent 구현
 - [ ] 슬래시 커맨드 구현
 - [ ] 채널별 기본 MCP 설정
 - [ ] 키워드 자동 감지
@@ -395,5 +497,6 @@ timeline
 | 상태 저장 | In-Memory | SQLite (필요시) |
 | 분산 락 | 미사용 | Redis (다중 인스턴스 시) |
 | 인증 | 없음 | API Key (필요시) |
+| 사용자 소통 | Gateway 직접 | user_comm Agent |
 
-단일 인스턴스에서는 현재 구조로 충분하며, 트래픽이 늘어나면 점진적으로 확장할 계획이다.
+단일 인스턴스에서는 현재 구조로 충분하며, 트래픽이 늘어나면 점진적으로 확장할 계획이다. user_comm Agent를 통해 사용자와의 소통을 체계화하고, 팀 내 다른 agent들과의 협업을 효율화한다.
