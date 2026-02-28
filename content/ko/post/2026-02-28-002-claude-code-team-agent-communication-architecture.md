@@ -167,7 +167,7 @@ SQLite Message Hub + MCP Server 조합이 Claude Code 팀 에이전트 통신에
 
 ## 코드
 
-전체 코드는 [GitHub](https://github.com/yarang/claude-code-team-comm)에서 확인할 수 있습니다.
+핵심 컴포넌트:
 
 - `message_hub.py`: SQLite Message Hub
 - `team_comm_mcp_server.py`: MCP Server

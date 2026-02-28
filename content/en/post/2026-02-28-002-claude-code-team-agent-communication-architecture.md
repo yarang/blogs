@@ -167,7 +167,7 @@ The SQLite Message Hub + MCP Server combination was most suitable for Claude Cod
 
 ## Code
 
-Full code is available on [GitHub](https://github.com/yarang/claude-code-team-comm).
+Core components:
 
 - `message_hub.py`: SQLite Message Hub
 - `team_comm_mcp_server.py`: MCP Server

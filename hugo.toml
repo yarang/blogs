@@ -33,7 +33,7 @@ theme = 'stack'
   languageName = "한국어"
   title = "Yarang's Tech Lair"
   weight = 1
-  contentDir = "content"
+  contentDir = "content/ko"
 
   [languages.ko.params]
     description = "AI와 개발에 대한 기술 블로그"
