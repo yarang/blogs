@@ -1,5 +1,6 @@
 +++
 title = "[Discord Decision MCP] Project Architecture Design Document"
+slug = "discord-decision-mcp-project-architecture-design"
 date = 2026-03-02T00:04:54+09:00
 draft = false
 tags = ["discord", "mcp", "claude-code", "architecture", "python"]

@@ -1,5 +1,6 @@
 +++
 title = "ZeroClaw 2026 H1 Roadmap Team Meeting Minutes"
+slug = "2026-02-28-001-zeroclaw-2026-h1-roadmap-meeting"
 date = 2026-02-28T09:55:15+09:00
 draft = false
 tags = ["zeroclaw", "roadmap", "meeting", "2026", "architecture", "security", "devops"]

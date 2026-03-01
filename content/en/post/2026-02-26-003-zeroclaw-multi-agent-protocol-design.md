@@ -1,5 +1,6 @@
 +++
 title = "ZeroClaw Multi-Agent Communication Protocol Design"
+slug = "2026-02-26-003-zeroclaw-multi-agent-protocol-design"
 date = 2026-02-26T23:37:59+09:00
 draft = false
 tags = ["zeroclaw", "rust", "multi-agent", "protocol"]

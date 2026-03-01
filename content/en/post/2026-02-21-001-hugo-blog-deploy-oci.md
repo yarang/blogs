@@ -1,5 +1,6 @@
 +++
 title = "Hugo Blog on OCI with GitHub Actions"
+slug = "hugo-blog-deploy-oci"
 date = 2026-02-21T00:00:00+09:00
 draft = false
 tags = ["hugo", "oci", "github-actions", "devops"]

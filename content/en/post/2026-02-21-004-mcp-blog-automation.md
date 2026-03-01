@@ -1,5 +1,6 @@
 +++
 title = "Building a Blog Automation System with MCP"
+slug = "2026-02-21-004-mcp-blog-automation"
 date = 2026-02-21T21:30:00+09:00
 draft = false
 tags = ["mcp", "automation", "claude", "blog"]

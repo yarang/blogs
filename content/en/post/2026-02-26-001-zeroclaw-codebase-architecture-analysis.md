@@ -1,5 +1,6 @@
 +++
 title = "ZeroClaw Codebase Architecture Analysis Report"
+slug = "2026-02-26-001-zeroclaw-codebase-architecture-analysis"
 date = 2026-02-26T10:07:29+09:00
 draft = false
 tags = ["zeroclaw", "rust", "architecture", "security", "multi-agent"]

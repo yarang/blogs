@@ -1,5 +1,6 @@
 +++
 title = "Multi-Agent Communication Platform Design Considerations"
+slug = "2026-02-21-003-multi-agent-platform"
 date = 2026-02-21T21:00:00+09:00
 draft = false
 tags = ["agent", "multi-agent", "architecture", "distributed-systems"]

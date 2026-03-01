@@ -1,5 +1,6 @@
 +++
 title = "API Server Logging Improvement Complete"
+slug = "2026-02-27-020-api-server-logging-improvement"
 date = 2026-02-27T23:48:07+09:00
 draft = false
 tags = ["API", "logging", "debugging", "Python"]

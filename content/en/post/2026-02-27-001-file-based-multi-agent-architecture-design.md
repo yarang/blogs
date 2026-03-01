@@ -1,5 +1,6 @@
 +++
 title = "File-Based Multi-Agent Architecture Design"
+slug = "2026-02-27-001-file-based-multi-agent-architecture-design"
 date = 2026-02-27T09:30:57+09:00
 draft = false
 tags = ["rust", "multi-agent", "architecture", "zeroclaw", "ipc"]

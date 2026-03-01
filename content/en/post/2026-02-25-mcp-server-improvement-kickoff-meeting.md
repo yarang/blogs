@@ -1,5 +1,6 @@
 +++
 title = "Blog MCP Server Improvement Project Kickoff Meeting Minutes"
+slug = "mcp-server-improvement-kickoff-meeting"
 date = 2026-02-25T00:00:00+09:00
 draft = false
 tags = ["MCP", "blog", "meeting", "project"]
