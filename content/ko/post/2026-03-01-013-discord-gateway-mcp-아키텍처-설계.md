@@ -28,45 +28,42 @@ Claude Code 팀에서 Discord를 통한 사용자 소통을 위해 Discord Gatew
 
 ```mermaid
 flowchart LR
-    %% 스타일 정의
     classDef discord fill:#5865F2,stroke:#404EED,color:#fff
     classDef gateway fill:#059669,stroke:#047857,color:#fff
     classDef agent fill:#F59E0B,stroke:#D97706,color:#fff
     classDef mcp fill:#8B5CF6,stroke:#7C3AED,color:#fff
-    classDef storage fill:#6B7280,stroke:#4B5563,color:#fff
 
-    subgraph Discord["💬 Discord"]
-        User[("👤 사용자")]
+    subgraph Discord["Discord"]
+        User[("사용자")]
     end
 
-    subgraph Gateway["🖥️ Gateway Service :8081"]
-        WS[("🔌 WebSocket")]
-        API[("📡 REST API")]
-        SSE[("📤 SSE")]
+    subgraph Gateway["Gateway Service :8081"]
+        WS[("WebSocket")]
+        API[("REST API")]
+        SSE[("SSE")]
     end
 
-    subgraph Agents["🤖 Claude Code Team"]
-        UserComm["user_comm<br/>💬"]
-        GCP["gcp-mcp<br/>☁️"]:::mcp
-        OCI["oci-mcp<br/>☁️"]:::mcp
-        DB["db-mcp<br/>🗄️"]:::mcp
+    subgraph Agents["Claude Code Team"]
+        UserComm["user_comm"]:::agent
+        GCP["gcp-mcp"]:::mcp
+        OCI["oci-mcp"]:::mcp
+        DB["db-mcp"]:::mcp
     end
 
-    User -->|"📝 메시지"| WS
+    User -->|"메시지"| WS
     WS --> UserComm
-    UserComm -->|"🔀 라우팅"| API
+    UserComm -->|"라우팅"| API
     API --> GCP
     API --> OCI
     API --> DB
-    GCP -->|"✅ 응답"| UserComm
-    OCI -->|"✅ 응답"| UserComm
-    DB -->|"✅ 응답"| UserComm
-    UserComm -->|"📢 브로드캐스트"| SSE
-    SSE -->|"🔔 알림"| User
+    GCP -->|"응답"| UserComm
+    OCI -->|"응답"| UserComm
+    DB -->|"응답"| UserComm
+    UserComm -->|"브로드캐스트"| SSE
+    SSE -->|"알림"| User
 
     class Discord discord
     class Gateway gateway
-    class UserComm agent
 ```
 
 ---
@@ -88,31 +85,30 @@ user_comm Agent는 Claude Code 팀의 멤버로서 Discord 채널을 통해 사�
 
 ```mermaid
 flowchart TB
-    %% 스타일 정의
     classDef core fill:#F59E0B,stroke:#D97706,color:#fff,stroke-width:2px
     classDef discord fill:#5865F2,stroke:#404EED,color:#fff
     classDef team fill:#8B5CF6,stroke:#7C3AED,color:#fff
 
-    subgraph UserComm["🤖 user_comm Agent"]
+    subgraph UserComm["user_comm Agent"]
         direction TB
-        DiscordBot["🤖 Discord Bot<br/><small>discord.py</small>"]:::core
-        Agent["🧠 UserCommAgent<br/><small>메인 로직</small>"]:::core
-        TeamComm["📡 TeamCommunicator<br/><small>agent 통신</small>"]:::core
+        DiscordBot["Discord Bot (discord.py)"]:::core
+        Agent["UserCommAgent (메인 로직)"]:::core
+        TeamComm["TeamCommunicator (agent 통신)"]:::core
 
         DiscordBot <--> Agent
         Agent <--> TeamComm
     end
 
-    subgraph Discord["💬 Discord API"]
-        Messages[("📨 Messages")]
-        Buttons[("🔘 Buttons/Views")]
-        Threads[("🧵 Threads")]
+    subgraph Discord["Discord API"]
+        Messages[("Messages")]
+        Buttons[("Buttons/Views")]
+        Threads[("Threads")]
     end
 
-    subgraph Team["🤝 다른 Agents"]
-        GCP["☁️ gcp-mcp"]:::team
-        OCI["☁️ oci-mcp"]:::team
-        Alert["🚨 alert-mcp"]:::team
+    subgraph Team["다른 Agents"]
+        GCP["gcp-mcp"]:::team
+        OCI["oci-mcp"]:::team
+        Alert["alert-mcp"]:::team
     end
 
     DiscordBot <--> Messages
@@ -178,28 +174,25 @@ oci-monitor: "디스크 92% 경고" → user_comm
 
 ```mermaid
 flowchart TB
-    %% 스타일 정의
-    classDef gateway fill:#059669,stroke:#047857,color:#fff,stroke-width:2px
+    classDef gateway fill:#059669,stroke:#047857,color:#fff
     classDef storage fill:#6B7280,stroke:#4B5563,color:#fff
     classDef external fill:#5865F2,stroke:#404EED,color:#fff
 
-    subgraph Gateway["🖥️ Gateway Service"]
-        direction TB
+    subgraph Gateway["Gateway Service"]
+        Bot["Discord Bot"]:::gateway
 
-        Bot["🤖 Discord Bot<br/><small>WebSocket 연결</small>"]:::gateway
-
-        subgraph Core["⚙️ 핵심 컴포넌트"]
-            Lock["🔒 Thread Lock<br/><small>In-Memory, 5분 타임아웃</small>"]:::storage
-            Cache["📦 Message Cache<br/><small>최대 1000개</small>"]:::storage
-            SSE["📤 SSE Manager<br/><small>실시간 브로드캐스트</small>"]:::gateway
+        subgraph Core["핵심 컴포넌트"]
+            Lock["Thread Lock"]:::storage
+            Cache["Message Cache"]:::storage
+            SSE["SSE Manager"]:::gateway
         end
     end
 
-    Discord[("💬 Discord API")]:::external <--> Bot
+    Discord[("Discord API")]:::external <--> Bot
     Bot --> Lock
     Bot --> Cache
     Bot --> SSE
-    SSE --> Clients[("🖥️ WebSocket Clients")]:::external
+    SSE --> Clients[("WebSocket Clients")]:::external
 ```
 
 ### 구성요소 상세
@@ -228,21 +221,20 @@ flowchart TB
 
 ```mermaid
 flowchart TD
-    %% 스타일 정의
     classDef start fill:#10B981,stroke:#059669,color:#fff
     classDef decision fill:#F59E0B,stroke:#D97706,color:#fff
     classDef action fill:#3B82F6,stroke:#2563EB,color:#fff
     classDef broadcast fill:#8B5CF6,stroke:#7C3AED,color:#fff
 
-    A[📨 메시지 수신]:::start --> B{🔹 슬래시 커맨드?<br/><small>/gcp status</small>}:::decision
-    B -->|Yes| C[🎯 해당 MCP 호출]:::action
-    B -->|No| D{🔹 @멘션?<br/><small>@gcp-monitor</small>}:::decision
+    A[메시지 수신]:::start --> B{슬래시 커맨드?}:::decision
+    B -->|Yes| C[해당 MCP 호출]:::action
+    B -->|No| D{@멘션?}:::decision
     D -->|Yes| C
-    D -->|No| E{🔹 키워드 감지?<br/><small>gcp, oci</small>}:::decision
+    D -->|No| E{키워드 감지?}:::decision
     E -->|Yes| C
-    E -->|No| F{🔹 채널 기본 MCP?<br/><small>#gcp-모니터링</small>}:::decision
+    E -->|No| F{채널 기본 MCP?}:::decision
     F -->|Yes| C
-    F -->|No| G[📢 Broadcast<br/><small>모든 MCP에 전달</small>]:::broadcast
+    F -->|No| G[Broadcast]:::broadcast
 ```
 
 ### 슬래시 커맨드 목록
@@ -266,34 +258,26 @@ flowchart TD
 ```mermaid
 sequenceDiagram
     autonumber
-    participant MCP1 as ☁️ gcp-mcp
-    participant Gateway as 🖥️ Gateway
-    participant MCP2 as ☁️ oci-mcp
-    participant Discord as 💬 Discord Thread
+    participant MCP1 as gcp-mcp
+    participant Gateway as Gateway
+    participant MCP2 as oci-mcp
+    participant Discord as Discord Thread
 
-    rect rgb(16, 185, 129, 0.1)
-        Note over MCP1,Discord: 락 획득 단계
-        MCP1->>+Gateway: 🔒 락 획득 요청
-        Gateway-->>-MCP1: ✅ 락 획득 성공
-        MCP1->>Discord: 📝 응답 전송
-    end
+    Note over MCP1,Discord: 락 획득 단계
+    MCP1->>+Gateway: 락 획득 요청
+    Gateway-->>-MCP1: 락 획득 성공
+    MCP1->>Discord: 응답 전송
 
-    rect rgb(239, 68, 68, 0.1)
-        Note over MCP2,Gateway: 락 충돌 단계
-        MCP2->>Gateway: 🔒 락 획득 요청
-        Gateway-->>MCP2: ❌ 락 획득 실패<br/><small>(gcp-mcp 소유)</small>
-    end
+    Note over MCP2,Gateway: 락 충돌 단계
+    MCP2->>Gateway: 락 획득 요청
+    Gateway-->>MCP2: 락 획득 실패 (gcp-mcp 소유)
 
-    rect rgb(251, 191, 36, 0.1)
-        Note over MCP1,Gateway: ⏰ 5분 후 타임아웃
-        Gateway->>Gateway: 🔓 락 자동 해제
-    end
+    Note over MCP1,Gateway: 5분 후 타임아웃
+    Gateway->>Gateway: 락 자동 해제
 
-    rect rgb(16, 185, 129, 0.1)
-        Note over MCP2,Gateway: 락 재시도
-        MCP2->>+Gateway: 🔒 락 획득 요청
-        Gateway-->>-MCP2: ✅ 락 획득 성공
-    end
+    Note over MCP2,Gateway: 락 재시도
+    MCP2->>+Gateway: 락 획득 요청
+    Gateway-->>-MCP2: 락 획득 성공
 ```
 
 ### Lock API
@@ -345,36 +329,32 @@ POST /api/threads/123456/acquire
 
 ```mermaid
 flowchart TB
-    %% 스타일 정의
     classDef message fill:#3B82F6,stroke:#2563EB,color:#fff
     classDef thread fill:#10B981,stroke:#059669,color:#fff
     classDef lock fill:#F59E0B,stroke:#D97706,color:#fff
-    classDef flow fill:#6B7280,stroke:#4B5563,color:#fff,stroke-dasharray: 5 5
 
-    subgraph Tools["🛠️ MCP 도구 (8개)"]
-        direction TB
-
-        subgraph Message["📨 메시지 도구"]
-            Send["discord_send_message<br/><small>메시지 전송</small>"]:::message
-            Get["discord_get_messages<br/><small>메시지 조회</small>"]:::message
-            Wait["discord_wait_for_message<br/><small>메시지 대기</small>"]:::message
+    subgraph Tools["MCP 도구 8개"]
+        subgraph Message["메시지 도구"]
+            Send["discord_send_message"]:::message
+            Get["discord_get_messages"]:::message
+            Wait["discord_wait_for_message"]:::message
         end
 
-        subgraph Thread["🧵 스레드 도구"]
-            Create["discord_create_thread<br/><small>스레드 생성</small>"]:::thread
-            List["discord_list_threads<br/><small>스레드 목록</small>"]:::thread
-            Archive["discord_archive_thread<br/><small>스레드 아카이브</small>"]:::thread
+        subgraph Thread["스레드 도구"]
+            Create["discord_create_thread"]:::thread
+            List["discord_list_threads"]:::thread
+            Archive["discord_archive_thread"]:::thread
         end
 
-        subgraph Lock["🔒 락 도구"]
-            Acquire["discord_acquire_thread<br/><small>락 획득</small>"]:::lock
-            Release["discord_release_thread<br/><small>락 해제</small>"]:::lock
+        subgraph Lock["락 도구"]
+            Acquire["discord_acquire_thread"]:::lock
+            Release["discord_release_thread"]:::lock
         end
     end
 
-    Acquire ==>|"1️⃣"| Create:::flow
-    Create ==>|"2️⃣"| Send:::flow
-    Send ==>|"3️⃣"| Release:::flow
+    Acquire -->|"1"| Create
+    Create -->|"2"| Send
+    Send -->|"3"| Release
 ```
 
 ### 사용 예시
@@ -407,40 +387,37 @@ discord_acquire_thread(
 
 ```mermaid
 flowchart TB
-    %% 스타일 정의
     classDef gateway fill:#059669,stroke:#047857,color:#fff
     classDef usercomm fill:#F59E0B,stroke:#D97706,color:#fff
     classDef mcp fill:#8B5CF6,stroke:#7C3AED,color:#fff
     classDef shared fill:#6B7280,stroke:#4B5563,color:#fff
     classDef docs fill:#3B82F6,stroke:#2563EB,color:#fff
 
-    subgraph Project["📁 server_monitor/"]
-        direction TB
-
-        subgraph GwDir["🖥️ gateway/"]
-            Main["📄 main.py<br/><small>FastAPI 앱</small>"]:::gateway
-            WS["🔌 discord_ws.py<br/><small>WebSocket</small>"]:::gateway
-            Lock["🔒 thread_lock.py<br/><small>Lock 매니저</small>"]:::gateway
-            SSE["📤 sse.py<br/><small>SSE 스트리밍</small>"]:::gateway
+    subgraph Project["server_monitor/"]
+        subgraph GwDir["gateway/"]
+            Main["main.py"]:::gateway
+            WS["discord_ws.py"]:::gateway
+            Lock["thread_lock.py"]:::gateway
+            SSE["sse.py"]:::gateway
         end
 
-        subgraph UcDir["🤖 user_comm/"]
-            Agent["🧠 agent.py<br/><small>메인 Agent</small>"]:::usercomm
-            Bot["🤖 discord_bot.py<br/><small>Discord Bot</small>"]:::usercomm
-            Team["📡 team_comm.py<br/><small>팀 통신</small>"]:::usercomm
+        subgraph UcDir["user_comm/"]
+            Agent["agent.py"]:::usercomm
+            Bot["discord_bot.py"]:::usercomm
+            Team["team_comm.py"]:::usercomm
         end
 
-        subgraph McpDir["⚡ discord_mcp/"]
-            Server["🔧 server.py<br/><small>8개 도구</small>"]:::mcp
+        subgraph McpDir["discord_mcp/"]
+            Server["server.py"]:::mcp
         end
 
-        subgraph SharedDir["🔄 mcp_shared/"]
-            Monitor["📊 monitor/"]:::shared
+        subgraph SharedDir["mcp_shared/"]
+            Monitor["monitor/"]:::shared
         end
 
-        subgraph DocsDir["📚 docs/"]
-            Strategy["📋 MCP_SELECTION_STRATEGY.md"]:::docs
-            Policy["📋 MCP_ROUTING_POLICY.md"]:::docs
+        subgraph DocsDir["docs/"]
+            Strategy["MCP_SELECTION_STRATEGY.md"]:::docs
+            Policy["MCP_ROUTING_POLICY.md"]:::docs
         end
     end
 

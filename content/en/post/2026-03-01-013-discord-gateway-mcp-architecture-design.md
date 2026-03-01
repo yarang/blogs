@@ -11,9 +11,7 @@ TocOpen = true
 
 # Discord Gateway MCP Architecture Design
 
-The Claude Code team designed a Discord Gateway Service for user communication via Discord. This article summarizes the key architecture decisions and user_comm Agent design.
-
----
+The Claude Code team designed a Discord Gateway Service for user communication via Discord. This article summarizes the key architecture decisions and---
 
 ## 1. Overall Architecture
 
@@ -30,40 +28,39 @@ The Claude Code team designed a Discord Gateway Service for user communication v
 
 ```mermaid
 flowchart LR
-    %% Style definitions
     classDef discord fill:#5865F2,stroke:#404EED,color:#fff
     classDef gateway fill:#059669,stroke:#047857,color:#fff
     classDef agent fill:#F59E0B,stroke:#D97706,color:#fff
     classDef mcp fill:#8B5CF6,stroke:#7C3AED,color:#fff
 
-    subgraph Discord["💬 Discord"]
-        User[("👤 User")]
+    subgraph Discord["Discord"]
+        User[("User")]
     end
 
-    subgraph Gateway["🖥️ Gateway Service :8081"]
-        WS[("🔌 WebSocket")]
-        API[("📡 REST API")]
-        SSE[("📤 SSE")]
+    subgraph Gateway["Gateway Service :8081"]
+        WS[("WebSocket")]
+        API[("REST API")]
+        SSE[("SSE")]
     end
 
-    subgraph Agents["🤖 Claude Code Team"]
-        UserComm["user_comm<br/>💬"]:::agent
-        GCP["gcp-mcp<br/>☁️"]:::mcp
-        OCI["oci-mcp<br/>☁️"]:::mcp
-        DB["db-mcp<br/>🗄️"]:::mcp
+    subgraph Agents["Claude Code Team"]
+        UserComm["user_comm"]:::agent
+        GCP["gcp-mcp"]:::mcp
+        OCI["oci-mcp"]:::mcp
+        DB["db-mcp"]:::mcp
     end
 
-    User -->|"📝 Message"| WS
+    User -->|"Message"| WS
     WS --> UserComm
-    UserComm -->|"🔀 Route"| API
+    UserComm -->|"Route"| API
     API --> GCP
     API --> OCI
     API --> DB
-    GCP -->|"✅ Response"| UserComm
-    OCI -->|"✅ Response"| UserComm
-    DB -->|"✅ Response"| UserComm
-    UserComm -->|"📢 Broadcast"| SSE
-    SSE -->|"🔔 Notify"| User
+    GCP -->|"Response"| UserComm
+    OCI -->|"Response"| UserComm
+    DB -->|"Response"| UserComm
+    UserComm -->|"Broadcast"| SSE
+    SSE -->|"Notify"| User
 
     class Discord discord
     class Gateway gateway
@@ -88,31 +85,30 @@ The user_comm Agent is a member of the Claude Code team, communicating with user
 
 ```mermaid
 flowchart TB
-    %% Style definitions
-    classDef core fill:#F59E0B,stroke:#D97706,color:#fff,stroke-width:2px
+    classDef core fill:#F59E0B,stroke:#D97706,color:#fff
     classDef discord fill:#5865F2,stroke:#404EED,color:#fff
     classDef team fill:#8B5CF6,stroke:#7C3AED,color:#fff
 
-    subgraph UserComm["🤖 user_comm Agent"]
+    subgraph UserComm["user_comm Agent"]
         direction TB
-        DiscordBot["🤖 Discord Bot<br/><small>discord.py</small>"]:::core
-        Agent["🧠 UserCommAgent<br/><small>Main Logic</small>"]:::core
-        TeamComm["📡 TeamCommunicator<br/><small>Agent Comm</small>"]:::core
+        DiscordBot["Discord Bot"]:::core
+        Agent["UserCommAgent"]:::core
+        TeamComm["TeamCommunicator"]:::core
 
         DiscordBot <--> Agent
         Agent <--> TeamComm
     end
 
-    subgraph Discord["💬 Discord API"]
-        Messages[("📨 Messages")]
-        Buttons[("🔘 Buttons/Views")]
-        Threads[("🧵 Threads")]
+    subgraph Discord["Discord API"]
+        Messages[("Messages")]
+        Buttons[("Buttons/Views")]
+        Threads[("Threads")]
     end
 
-    subgraph Team["🤝 Other Agents"]
-        GCP["☁️ gcp-mcp"]:::team
-        OCI["☁️ oci-mcp"]:::team
-        Alert["🚨 alert-mcp"]:::team
+    subgraph Team["Other Agents"]
+        GCP["gcp-mcp"]:::team
+        OCI["oci-mcp"]:::team
+        Alert["alert-mcp"]:::team
     end
 
     DiscordBot <--> Messages
@@ -137,27 +133,27 @@ class MessageType(Enum):
 
 ### Key Function Flows
 
-#### Input Reception (Discord → Agent)
+#### Input Reception (Discord -> Agent)
 ```
 User: "@gcp-monitor check server status"
-  → DiscordBot.on_message
-  → UserCommAgent._parse_command (target: gcp-monitor)
-  → TeamCommunicator.send_to_agent
-  → Discord: "Request forwarded to gcp-monitor."
+  -> DiscordBot.on_message
+  -> UserCommAgent._parse_command (target: gcp-monitor)
+  -> TeamCommunicator.send_to_agent
+  -> Discord: "Request forwarded to gcp-monitor."
 ```
 
-#### Opinion Request (Agent → Discord)
+#### Opinion Request (Agent -> Discord)
 ```
-gcp-monitor: "Clean up disk?" → user_comm
-  → DiscordBot.ask_opinion (wait for button or reply)
-  → User response
-  → TeamCommunicator.send_to_agent (forward response)
+gcp-monitor: "Clean up disk?" -> user_comm
+  -> DiscordBot.ask_opinion (wait for button or reply)
+  -> User response
+  -> TeamCommunicator.send_to_agent (forward response)
 ```
 
-#### Notification/Report (Agent → Discord)
+#### Notification/Report (Agent -> Discord)
 ```
-oci-monitor: "Disk 92% warning" → user_comm
-  → DiscordBot.send_message (Embed format)
+oci-monitor: "Disk 92% warning" -> user_comm
+  -> DiscordBot.send_message (Embed format)
 ```
 
 ---
@@ -178,28 +174,25 @@ oci-monitor: "Disk 92% warning" → user_comm
 
 ```mermaid
 flowchart TB
-    %% Style definitions
-    classDef gateway fill:#059669,stroke:#047857,color:#fff,stroke-width:2px
+    classDef gateway fill:#059669,stroke:#047857,color:#fff
     classDef storage fill:#6B7280,stroke:#4B5563,color:#fff
     classDef external fill:#5865F2,stroke:#404EED,color:#fff
 
-    subgraph Gateway["🖥️ Gateway Service"]
-        direction TB
+    subgraph Gateway["Gateway Service"]
+        Bot["Discord Bot"]:::gateway
 
-        Bot["🤖 Discord Bot<br/><small>WebSocket Connection</small>"]:::gateway
-
-        subgraph Core["⚙️ Core Components"]
-            Lock["🔒 Thread Lock<br/><small>In-Memory, 5min timeout</small>"]:::storage
-            Cache["📦 Message Cache<br/><small>Max 1000 items</small>"]:::storage
-            SSE["📤 SSE Manager<br/><small>Real-time broadcast</small>"]:::gateway
+        subgraph Core["Core Components"]
+            Lock["Thread Lock"]:::storage
+            Cache["Message Cache"]:::storage
+            SSE["SSE Manager"]:::gateway
         end
     end
 
-    Discord[("💬 Discord API")]:::external <--> Bot
+    Discord[("Discord API")]:::external <--> Bot
     Bot --> Lock
     Bot --> Cache
     Bot --> SSE
-    SSE --> Clients[("🖥️ WebSocket Clients")]:::external
+    SSE --> Clients[("WebSocket Clients")]:::external
 ```
 
 ### Component Details
@@ -219,30 +212,29 @@ flowchart TB
 
 | Rank | Method | Example | Description |
 |:----:|--------|---------|-------------|
-| 1️⃣ | Slash Command | `/gcp status` | Most explicit |
-| 2️⃣ | @Mention | `@gcp-monitor status` | Natural conversation |
-| 3️⃣ | Keyword Detection | `gcp server status` | Auto keyword recognition |
-| 4️⃣ | Channel Assignment | #gcp-monitoring | Channel default MCP |
+| 1 | Slash Command | `/gcp status` | Most explicit |
+| 2 | @Mention | `@gcp-monitor status` | Natural conversation |
+| 3 | Keyword Detection | `gcp server status` | Auto keyword recognition |
+| 4 | Channel Assignment | #gcp-monitoring | Channel default MCP |
 
 ### Fallback Order
 
 ```mermaid
 flowchart TD
-    %% Style definitions
     classDef start fill:#10B981,stroke:#059669,color:#fff
     classDef decision fill:#F59E0B,stroke:#D97706,color:#fff
     classDef action fill:#3B82F6,stroke:#2563EB,color:#fff
     classDef broadcast fill:#8B5CF6,stroke:#7C3AED,color:#fff
 
-    A[📨 Message Received]:::start --> B{🔹 Slash Command?<br/><small>/gcp status</small>}:::decision
-    B -->|Yes| C[🎯 Route to MCP]:::action
-    B -->|No| D{🔹 @Mention?<br/><small>@gcp-monitor</small>}:::decision
+    A[Message Received]:::start --> B{Slash Command?}:::decision
+    B -->|Yes| C[Route to MCP]:::action
+    B -->|No| D{@Mention?}:::decision
     D -->|Yes| C
-    D -->|No| E{🔹 Keyword Detection?<br/><small>gcp, oci</small>}:::decision
+    D -->|No| E{Keyword?}:::decision
     E -->|Yes| C
-    E -->|No| F{🔹 Channel Default MCP?<br/><small>#gcp-monitoring</small>}:::decision
+    E -->|No| F{Channel Default MCP?}:::decision
     F -->|Yes| C
-    F -->|No| G[📢 Broadcast<br/><small>Deliver to all MCPs</small>]:::broadcast
+    F -->|No| G[Broadcast]:::broadcast
 ```
 
 ### Slash Command List
@@ -266,34 +258,26 @@ flowchart TD
 ```mermaid
 sequenceDiagram
     autonumber
-    participant MCP1 as ☁️ gcp-mcp
-    participant Gateway as 🖥️ Gateway
-    participant MCP2 as ☁️ oci-mcp
-    participant Discord as 💬 Discord Thread
+    participant MCP1 as gcp-mcp
+    participant Gateway as Gateway
+    participant MCP2 as oci-mcp
+    participant Discord as Discord Thread
 
-    rect rgb(16, 185, 129, 0.1)
-        Note over MCP1,Discord: Lock Acquisition Phase
-        MCP1->>+Gateway: 🔒 Lock request
-        Gateway-->>-MCP1: ✅ Lock acquired
-        MCP1->>Discord: 📝 Send response
-    end
+    Note over MCP1,Discord: Lock Acquisition Phase
+    MCP1->>+Gateway: Lock request
+    Gateway-->>-MCP1: Lock acquired
+    MCP1->>Discord: Send response
 
-    rect rgb(239, 68, 68, 0.1)
-        Note over MCP2,Gateway: Lock Conflict Phase
-        MCP2->>Gateway: 🔒 Lock request
-        Gateway-->>MCP2: ❌ Lock failed<br/><small>(owned by gcp-mcp)</small>
-    end
+    Note over MCP2,Gateway: Lock Conflict Phase
+    MCP2->>Gateway: Lock request
+    Gateway-->>MCP2: Lock failed (owned by gcp-mcp)
 
-    rect rgb(251, 191, 36, 0.1)
-        Note over MCP1,Gateway: ⏰ 5min timeout
-        Gateway->>Gateway: 🔓 Auto-release lock
-    end
+    Note over MCP1,Gateway: 5min timeout
+    Gateway->>Gateway: Auto-release lock
 
-    rect rgb(16, 185, 129, 0.1)
-        Note over MCP2,Gateway: Lock Retry
-        MCP2->>+Gateway: 🔒 Lock request
-        Gateway-->>-MCP2: ✅ Lock acquired
-    end
+    Note over MCP2,Gateway: Lock Retry
+    MCP2->>+Gateway: Lock request
+    Gateway-->>-MCP2: Lock acquired
 ```
 
 ### Lock API
@@ -302,7 +286,7 @@ sequenceDiagram
 |--------|----------|-------------|
 | `POST` | `/api/threads/{id}/acquire` | Acquire lock |
 | `POST` | `/api/threads/{id}/release` | Release lock |
-| `GET` | `/api/threads/{id}/lock` | Check lock status |
+| `GET` | `/api/commit` | Check lock status |
 
 ### Request/Response Example
 
@@ -318,7 +302,7 @@ POST /api/threads/123456/acquire
 **Lock Acquire Response**
 ```json
 {
-  "acquired": true,
+  "acquired: true,
   "thread_id": "123456",
   "agent": "gcp-mcp"
 }
@@ -345,36 +329,35 @@ POST /api/threads/123456/acquire
 
 ```mermaid
 flowchart TB
-    %% Style definitions
     classDef message fill:#3B82F6,stroke:#2563EB,color:#fff
     classDef thread fill:#10B981,stroke:#059669,color:#fff
     classDef lock fill:#F59E0B,stroke:#D97706,color:#fff
     classDef flow fill:#6B7280,stroke:#4B5563,color:#fff,stroke-dasharray: 5 5
 
-    subgraph Tools["🛠️ MCP Tools (8)"]
+    subgraph Tools["MCP Tools (8)"]
         direction TB
 
-        subgraph Message["📨 Message Tools"]
-            Send["discord_send_message<br/><small>Send message</small>"]:::message
-            Get["discord_get_messages<br/><small>Get messages</small>"]:::message
-            Wait["discord_wait_for_message<br/><small>Wait for message</small>"]:::message
+        subgraph Message["Message Tools"]
+            Send["discord_send_message"]:::message
+            Get["discord_get_messages"]:::message
+            Wait["discord_wait_for_message"]:::message
         end
 
-        subgraph Thread["🧵 Thread Tools"]
-            Create["discord_create_thread<br/><small>Create thread</small>"]:::thread
-            List["discord_list_threads<br/><small>List threads</small>"]:::thread
-            Archive["discord_archive_thread<br/><small>Archive thread</small>"]:::thread
+        subgraph Thread["Thread Tools"]
+            Create["discord_create_thread"]:::thread
+            List["discord_list_threads"]:::thread
+            Archive["discord_archive_thread"]:::thread
         end
 
-        subgraph Lock["🔒 Lock Tools"]
-            Acquire["discord_acquire_thread<br/><small>Acquire lock</small>"]:::lock
-            Release["discord_release_thread<br/><small>Release lock</small>"]:::lock
+        subgraph Lock["Lock Tools"]
+            Acquire["discord_acquire_thread"]:::lock
+            Release["discord_release_thread"]:::lock
         end
     end
 
-    Acquire ==>|"1️⃣"| Create:::flow
-    Create ==>|"2️⃣"| Send:::flow
-    Send ==>|"3️⃣"| Release:::flow
+    Acquire ==>|"1"| Create:::flow
+    Create ==>|"2"| Send:::flow
+    Send ==>|"3"| Release:::flow
 ```
 
 ### Usage Examples
@@ -407,40 +390,39 @@ discord_acquire_thread(
 
 ```mermaid
 flowchart TB
-    %% Style definitions
     classDef gateway fill:#059669,stroke:#047857,color:#fff
     classDef usercomm fill:#F59E0B,stroke:#D97706,color:#fff
     classDef mcp fill:#8B5CF6,stroke:#7C3AED,color:#fff
     classDef shared fill:#6B7280,stroke:#4B5563,color:#fff
     classDef docs fill:#3B82F6,stroke:#2563EB,color:#fff
 
-    subgraph Project["📁 server_monitor/"]
+    subgraph Project["server_monitor/"]
         direction TB
 
-        subgraph GwDir["🖥️ gateway/"]
-            Main["📄 main.py<br/><small>FastAPI App</small>"]:::gateway
-            WS["🔌 discord_ws.py<br/><small>WebSocket</small>"]:::gateway
-            Lock["🔒 thread_lock.py<br/><small>Lock Manager</small>"]:::gateway
-            SSE["📤 sse.py<br/><small>SSE Streaming</small>"]:::gateway
+        subgraph GwDir["gateway/"]
+            Main["main.py"]:::gateway
+            WS["discord_ws.py"]:::gateway
+            Lock["thread_lock.py"]:::gateway
+            SSE["sse.py"]:::gateway
         end
 
-        subgraph UcDir["🤖 user_comm/"]
-            Agent["🧠 agent.py<br/><small>Main Agent</small>"]:::usercomm
-            Bot["🤖 discord_bot.py<br/><small>Discord Bot</small>"]:::usercomm
-            Team["📡 team_comm.py<br/><small>Team Comm</small>"]:::usercomm
+        subgraph UcDir["user_comm/"]
+            Agent["agent.py"]:::usercomm
+            Bot["discord_bot.py"]:::usercomm
+            Team["team_comm.py"]:::usercomm
         end
 
-        subgraph McpDir["⚡ discord_mcp/"]
-            Server["🔧 server.py<br/><small>8 Tools</small>"]:::mcp
+        subgraph McpDir["discord_mcp/"]
+            Server["server.py"]:::mcp
         end
 
-        subgraph SharedDir["🔄 mcp_shared/"]
-            Monitor["📊 monitor/"]:::shared
+        subgraph SharedDir["mcp_shared/"]
+            Monitor["monitor/"]:::shared
         end
 
-        subgraph DocsDir["📚 docs/"]
-            Strategy["📋 MCP_SELECTION_STRATEGY.md"]:::docs
-            Policy["📋 MCP_ROUTING_POLICY.md"]:::docs
+        subgraph DocsDir["docs/"]
+            Strategy["MCP_SELECTION_STRATEGY.md"]:::docs
+            Policy["MCP_ROUTING_POLICY.md"]:::docs
         end
     end
 
@@ -452,18 +434,6 @@ flowchart TB
     Agent --> Bot
     Agent --> Team
 ```
-
-### Directory Description
-
-| Path | Description |
-|------|-------------|
-| `gateway/` | Gateway Service (FastAPI) |
-| `user_comm/` | User Communication Agent |
-| `discord_mcp/` | MCP Server (8 tools) |
-| `mcp_shared/` | Shared MCP tools |
-| `docs/` | Documentation |
-
----
 
 ### Directory Description
 
@@ -521,19 +491,19 @@ curl http://localhost:8081/health
 timeline
     title Discord Gateway Roadmap
 
-    section Phase 1 (Complete)
+    section Phase 1 Complete
         Gateway Service : FastAPI App
         Discord Connection : WebSocket
         Thread Lock : In-Memory
         MCP Server : 8 Tools
 
-    section Phase 2 (In Progress)
+    section Phase 2 In Progress
         user_comm Agent : User Communication
         Slash Commands : /gcp, /oci
         Channel MCP : Default MCP Settings
         Keyword Detection : Auto Recognition
 
-    section Phase 3 (Planned)
+    section Phase 3 Planned
         API Auth : API Key
         Rate Limiting : Request Limits
         Persistence : SQLite
@@ -545,7 +515,7 @@ timeline
 - [x] Discord WebSocket connection
 - [x] Thread Lock (In-Memory)
 - [x] SSE broadcast
-- [x] MCP Server (8 tools)
+- [x] Mermaid Server (8 tools)
 
 ### Phase 2: In Progress
 
