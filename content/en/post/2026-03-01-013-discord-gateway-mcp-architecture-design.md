@@ -3,8 +3,8 @@ title = "Discord Gateway MCP Architecture Design"
 slug = "discord-gateway-mcp-architecture-design"
 date = 2026-03-01T01:13:00+09:00
 draft = false
-tags = ["discord", "mcp", "fastapi", "claude-code", "user-comm"]
 categories = ["Development", "Architecture"]
+tags = ["discord", "mcp", "fastapi", "claude-code", "user-comm"]
 ShowToc = true
 TocOpen = true
 +++
@@ -135,6 +135,31 @@ class MessageType(Enum):
     ERROR = "error"                      # Error
 ```
 
+### Key Function Flows
+
+#### Input Reception (Discord → Agent)
+```
+User: "@gcp-monitor check server status"
+  → DiscordBot.on_message
+  → UserCommAgent._parse_command (target: gcp-monitor)
+  → TeamCommunicator.send_to_agent
+  → Discord: "Request forwarded to gcp-monitor."
+```
+
+#### Opinion Request (Agent → Discord)
+```
+gcp-monitor: "Clean up disk?" → user_comm
+  → DiscordBot.ask_opinion (wait for button or reply)
+  → User response
+  → TeamCommunicator.send_to_agent (forward response)
+```
+
+#### Notification/Report (Agent → Discord)
+```
+oci-monitor: "Disk 92% warning" → user_comm
+  → DiscordBot.send_message (Embed format)
+```
+
 ---
 
 ## 3. Lightweight Architecture Without Redis
@@ -176,6 +201,15 @@ flowchart TB
     Bot --> SSE
     SSE --> Clients[("🖥️ WebSocket Clients")]:::external
 ```
+
+### Component Details
+
+| Module | Role | Features |
+|--------|------|----------|
+| Discord Bot | WebSocket connection | Auto-reconnect |
+| Thread Lock | Concurrency control | 5min timeout |
+| Message Cache | Message storage | Max 1000 items |
+| SSE Manager | Real-time delivery | Broadcast to all MCPs |
 
 ---
 
@@ -343,6 +377,30 @@ flowchart TB
     Send ==>|"3️⃣"| Release:::flow
 ```
 
+### Usage Examples
+
+```python
+# Send message
+discord_send_message(
+    channel_id="123456789",
+    content="Server status: OK"
+)
+
+# Create thread
+discord_create_thread(
+    channel_id="123456789",
+    message_id="987654321",
+    name="Status Check"
+)
+
+# Acquire lock
+discord_acquire_thread(
+    thread_id="111222333",
+    agent_name="gcp-mcp",
+    timeout=300
+)
+```
+
 ---
 
 ## 7. File Structure
@@ -394,6 +452,28 @@ flowchart TB
     Agent --> Bot
     Agent --> Team
 ```
+
+### Directory Description
+
+| Path | Description |
+|------|-------------|
+| `gateway/` | Gateway Service (FastAPI) |
+| `user_comm/` | User Communication Agent |
+| `discord_mcp/` | MCP Server (8 tools) |
+| `mcp_shared/` | Shared MCP tools |
+| `docs/` | Documentation |
+
+---
+
+### Directory Description
+
+| Path | Description |
+|------|-------------|
+| `gateway/` | Gateway Service (FastAPI) |
+| `user_comm/` | User Communication Agent |
+| `discord_mcp/` | MCP Server (8 tools) |
+| `mcp_shared/` | Shared MCP tools |
+| `docs/` | Documentation |
 
 ---
 
