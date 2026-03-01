@@ -17,16 +17,14 @@ Model Context Protocol(MCP)을 활용하여 Claude가 직접 블로그 포스트
 
 MCP(Model Context Protocol)는 Anthropic에서 개발한 프로토콜로, Claude와 외부 도구/데이터 소스 간의 표준화된 통신을 가능하게 합니다.
 
-```
-┌─────────────┐      MCP      ┌─────────────┐
-│   Claude    │ ◄──────────► │  MCP Server │
-└─────────────┘               └─────────────┘
-                                     │
-                                     ▼
-                              ┌─────────────┐
-                              │   Blog      │
-                              │   Files     │
-                              └─────────────┘
+```mermaid
+flowchart LR
+    classDef claude fill:#F59E0B,stroke:#D97706,color:#fff
+    classDef mcp fill:#8B5CF6,stroke:#7C3AED,color:#fff
+    classDef storage fill:#6B7280,stroke:#4B5563,color:#fff
+
+    Claude["Claude"]:::claude <-->|"MCP"| MCPServer["MCP Server"]:::mcp
+    MCPServer --> BlogFiles["Blog Files"]:::storage
 ```
 
 ## 아키텍처
@@ -72,6 +70,38 @@ class BlogManager:
 ```
 
 ## 제공 도구
+
+```mermaid
+flowchart TB
+    classDef create fill:#10B981,stroke:#059669,color:#fff
+    classDef read fill:#3B82F6,stroke:#2563EB,color:#fff
+    classDef update fill:#F59E0B,stroke:#D97706,color:#fff
+    classDef delete fill:#EF4444,stroke:#DC2626,color:#fff
+
+    subgraph Tools["MCP 도구"]
+        direction TB
+        C1["blog_create_post"]:::create
+        R1["blog_list_posts"]:::read
+        R2["blog_get_post"]:::read
+        R3["blog_search_posts"]:::read
+        U1["blog_update_post"]:::update
+        D1["blog_delete_post"]:::delete
+    end
+
+    subgraph CRUD["CRUD 작업"]
+        Create["생성"]
+        Read["조회"]
+        Update["수정"]
+        Delete["삭제"]
+    end
+
+    C1 --> Create
+    R1 --> Read
+    R2 --> Read
+    R3 --> Read
+    U1 --> Update
+    D1 --> Delete
+```
 
 ### 1. blog_create_post
 
@@ -146,6 +176,18 @@ YYYY-MM-DD-NNN-slug.md
 
 ## 활용 시나리오
 
+```mermaid
+flowchart LR
+    classDef user fill:#3B82F6,stroke:#2563EB,color:#fff
+    classDef claude fill:#F59E0B,stroke:#D97706,color:#fff
+    classDef mcp fill:#8B5CF6,stroke:#7C3AED,color:#fff
+    classDef file fill:#6B7280,stroke:#4B5563,color:#fff
+
+    User["사용자"]:::user -->|"자연어 요청"| Claude["Claude"]:::claude
+    Claude -->|"blog_create_post"| MCP["MCP Server"]:::mcp
+    MCP -->|"파일 생성"| Blog["YYYY-MM-DD-NNN-slug.md"]:::file
+```
+
 ### 1. 빠른 포스트 작성
 
 ```
@@ -197,6 +239,30 @@ filename = self._generate_filename(title, existing_count + 1)
 ```
 
 ## 확장 가능성
+
+```mermaid
+flowchart TB
+    classDef current fill:#10B981,stroke:#059669,color:#fff
+    classDef future fill:#6B7280,stroke:#4B5563,color:#fff
+
+    subgraph Current["현재 구현"]
+        C1["blog_create_post"]:::current
+        C2["blog_list_posts"]:::current
+        C3["blog_get_post"]:::current
+        C4["blog_update_post"]:::current
+        C5["blog_delete_post"]:::current
+        C6["blog_search_posts"]:::current
+    end
+
+    subgraph Future["확장 가능"]
+        F1["blog_upload_image"]:::future
+        F2["blog_suggest_tags"]:::future
+        F3["blog_optimize_seo"]:::future
+        F4["blog_publish"]:::future
+    end
+
+    Current --> Future
+```
 
 ### 1. 이미지 처리
 
