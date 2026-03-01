@@ -19,12 +19,8 @@ MCP(Model Context Protocol)는 Anthropic에서 개발한 프로토콜로, Claude
 
 ```mermaid
 flowchart LR
-    classDef claude fill:#F59E0B,stroke:#D97706,color:#fff
-    classDef mcp fill:#8B5CF6,stroke:#7C3AED,color:#fff
-    classDef storage fill:#6B7280,stroke:#4B5563,color:#fff
-
-    Claude["Claude"]:::claude <-->|"MCP"| MCPServer["MCP Server"]:::mcp
-    MCPServer --> BlogFiles["Blog Files"]:::storage
+    Claude <-->|MCP| MCPServer[MCP Server]
+    MCPServer --> BlogFiles[Blog Files]
 ```
 
 ## 아키텍처
@@ -73,26 +69,20 @@ class BlogManager:
 
 ```mermaid
 flowchart TB
-    classDef create fill:#10B981,stroke:#059669,color:#fff
-    classDef read fill:#3B82F6,stroke:#2563EB,color:#fff
-    classDef update fill:#F59E0B,stroke:#D97706,color:#fff
-    classDef delete fill:#EF4444,stroke:#DC2626,color:#fff
-
-    subgraph Tools["MCP 도구"]
-        direction TB
-        C1["blog_create_post"]:::create
-        R1["blog_list_posts"]:::read
-        R2["blog_get_post"]:::read
-        R3["blog_search_posts"]:::read
-        U1["blog_update_post"]:::update
-        D1["blog_delete_post"]:::delete
+    subgraph Tools[MCP Tools]
+        C1[blog_create_post]
+        R1[blog_list_posts]
+        R2[blog_get_post]
+        R3[blog_search_posts]
+        U1[blog_update_post]
+        D1[blog_delete_post]
     end
 
-    subgraph CRUD["CRUD 작업"]
-        Create["생성"]
-        Read["조회"]
-        Update["수정"]
-        Delete["삭제"]
+    subgraph CRUD[CRUD Operations]
+        Create[Create]
+        Read[Read]
+        Update[Update]
+        Delete[Delete]
     end
 
     C1 --> Create
@@ -164,6 +154,13 @@ flowchart TB
 
 포스트 파일명은 다음 규칙으로 자동 생성됩니다:
 
+```mermaid
+flowchart LR
+    User -->|Natural Language| Claude
+    Claude -->|blog_create_post| MCP[MCP Server]
+    MCP -->|Create File| Blog[YYYY-MM-DD-NNN-slug.md]
+```
+
 ```
 YYYY-MM-DD-NNN-slug.md
 ```
@@ -178,14 +175,9 @@ YYYY-MM-DD-NNN-slug.md
 
 ```mermaid
 flowchart LR
-    classDef user fill:#3B82F6,stroke:#2563EB,color:#fff
-    classDef claude fill:#F59E0B,stroke:#D97706,color:#fff
-    classDef mcp fill:#8B5CF6,stroke:#7C3AED,color:#fff
-    classDef file fill:#6B7280,stroke:#4B5563,color:#fff
-
-    User["사용자"]:::user -->|"자연어 요청"| Claude["Claude"]:::claude
-    Claude -->|"blog_create_post"| MCP["MCP Server"]:::mcp
-    MCP -->|"파일 생성"| Blog["YYYY-MM-DD-NNN-slug.md"]:::file
+    User -->|Request| Claude
+    Claude -->|blog_create_post| MCP[MCP Server]
+    MCP -->|Create File| Blog[YYYY-MM-DD-NNN-slug.md]
 ```
 
 ### 1. 빠른 포스트 작성
@@ -242,23 +234,20 @@ filename = self._generate_filename(title, existing_count + 1)
 
 ```mermaid
 flowchart TB
-    classDef current fill:#10B981,stroke:#059669,color:#fff
-    classDef future fill:#6B7280,stroke:#4B5563,color:#fff
-
-    subgraph Current["현재 구현"]
-        C1["blog_create_post"]:::current
-        C2["blog_list_posts"]:::current
-        C3["blog_get_post"]:::current
-        C4["blog_update_post"]:::current
-        C5["blog_delete_post"]:::current
-        C6["blog_search_posts"]:::current
+    subgraph Current[Current Implementation]
+        C1[blog_create_post]
+        C2[blog_list_posts]
+        C3[blog_get_post]
+        C4[blog_update_post]
+        C5[blog_delete_post]
+        C6[blog_search_posts]
     end
 
-    subgraph Future["확장 가능"]
-        F1["blog_upload_image"]:::future
-        F2["blog_suggest_tags"]:::future
-        F3["blog_optimize_seo"]:::future
-        F4["blog_publish"]:::future
+    subgraph Future[Future Extensions]
+        F1[blog_upload_image]
+        F2[blog_suggest_tags]
+        F3[blog_optimize_seo]
+        F4[blog_publish]
     end
 
     Current --> Future

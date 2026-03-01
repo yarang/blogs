@@ -83,19 +83,13 @@ User clicks 🔵 → GCP MCP responds
 
 ```mermaid
 flowchart TD
-    %% Style definitions
-    classDef start fill:#10B981,stroke:#059669,color:#fff
-    classDef decision fill:#F59E0B,stroke:#D97706,color:#fff
-    classDef action fill:#3B82F6,stroke:#2563EB,color:#fff
-    classDef broadcast fill:#8B5CF6,stroke:#7C3AED,color:#fff
-
-    A[📨 Message Received]:::start --> B{🔹 Slash Command?}:::decision
-    B -->|Yes| C[🎯 Route to MCP]:::action
-    B -->|No| D{🔹 @Mention?}:::decision
+    A[Message Received] --> B{Slash Command?}
+    B -->|Yes| C[Route to MCP]
+    B -->|No| D{Mention?}
     D -->|Yes| C
-    D -->|No| E{🔹 Keyword?}:::decision
+    D -->|No| E{Keyword?}
     E -->|Yes| C
-    E -->|No| F{🔹 Channel Default?}:::decision
+    E -->|No| F{Channel Default?}
     F -->|Yes| C
-    F -->|No| G[📢 Broadcast]:::broadcast
+    F -->|No| G[Broadcast]
 ```
