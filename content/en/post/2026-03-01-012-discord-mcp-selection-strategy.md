@@ -81,10 +81,21 @@ User clicks 🔵 → GCP MCP responds
 
 ## Fallback Order
 
-```
-1. Slash? → Route to MCP
-2. @Mention? → Route to MCP
-3. Keyword? → Route to MCP
-4. Channel default? → Route to MCP
-5. None → Broadcast
+```mermaid
+flowchart TD
+    %% Style definitions
+    classDef start fill:#10B981,stroke:#059669,color:#fff
+    classDef decision fill:#F59E0B,stroke:#D97706,color:#fff
+    classDef action fill:#3B82F6,stroke:#2563EB,color:#fff
+    classDef broadcast fill:#8B5CF6,stroke:#7C3AED,color:#fff
+
+    A[📨 Message Received]:::start --> B{🔹 Slash Command?}:::decision
+    B -->|Yes| C[🎯 Route to MCP]:::action
+    B -->|No| D{🔹 @Mention?}:::decision
+    D -->|Yes| C
+    D -->|No| E{🔹 Keyword?}:::decision
+    E -->|Yes| C
+    E -->|No| F{🔹 Channel Default?}:::decision
+    F -->|Yes| C
+    F -->|No| G[📢 Broadcast]:::broadcast
 ```

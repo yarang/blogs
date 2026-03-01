@@ -31,21 +31,30 @@ The Claude Code team designed a Discord Gateway Service for user communication v
 
 ### Structure
 
-```
-┌─────────────────────────────────────────────────────────────┐
-│                     Gateway Service                          │
-│                                                             │
-│  ┌─────────────────┐    ┌─────────────────┐                │
-│  │  Discord Bot    │    │  Thread Lock    │                │
-│  │  (WebSocket)    │    │  (In-Memory)    │                │
-│  └────────┬────────┘    └─────────────────┘                │
-│           │                                                  │
-│           ▼                                                  │
-│  ┌─────────────────┐    ┌─────────────────┐                │
-│  │  Message Cache  │    │  SSE Manager    │                │
-│  │  (1000 limit)   │    │(Real-time broadcast)│             │
-│  └─────────────────┘    └─────────────────┘                │
-└─────────────────────────────────────────────────────────────┘
+```mermaid
+flowchart TB
+    %% Style definitions
+    classDef gateway fill:#059669,stroke:#047857,color:#fff,stroke-width:2px
+    classDef storage fill:#6B7280,stroke:#4B5563,color:#fff
+    classDef external fill:#5865F2,stroke:#404EED,color:#fff
+
+    subgraph Gateway["🖥️ Gateway Service"]
+        direction TB
+
+        Bot["🤖 Discord Bot<br/><small>WebSocket</small>"]:::gateway
+
+        subgraph Core["⚙️ Core Components"]
+            Lock["🔒 Thread Lock<br/><small>In-Memory</small>"]:::storage
+            Cache["📦 Message Cache<br/><small>Max 1000</small>"]:::storage
+            SSE["📤 SSE Manager<br/><small>Real-time broadcast</small>"]:::gateway
+        end
+    end
+
+    Discord[("💬 Discord")]:::external <--> Bot
+    Bot --> Lock
+    Bot --> Cache
+    Bot --> SSE
+    SSE --> Clients[("🖥️ MCP Clients")]:::external
 ```
 
 ---
@@ -67,12 +76,23 @@ The Claude Code team designed a Discord Gateway Service for user communication v
 
 ### Fallback Behavior
 
-```
-1. Slash command detected → Route to MCP
-2. @Mention detected → Route to MCP
-3. Keyword detected → Route to MCP
-4. Channel default MCP check → Route to MCP
-5. None found → Broadcast (deliver to all MCPs)
+```mermaid
+flowchart TD
+    %% Style definitions
+    classDef start fill:#10B981,stroke:#059669,color:#fff
+    classDef decision fill:#F59E0B,stroke:#D97706,color:#fff
+    classDef action fill:#3B82F6,stroke:#2563EB,color:#fff
+    classDef broadcast fill:#8B5CF6,stroke:#7C3AED,color:#fff
+
+    A[📨 Message Received]:::start --> B{🔹 Slash Command?}:::decision
+    B -->|Yes| C[🎯 Route to MCP]:::action
+    B -->|No| D{🔹 @Mention?}:::decision
+    D -->|Yes| C
+    D -->|No| E{🔹 Keyword?}:::decision
+    E -->|Yes| C
+    E -->|No| F{🔹 Channel Default?}:::decision
+    F -->|Yes| C
+    F -->|No| G[📢 Broadcast]:::broadcast
 ```
 
 ### Slash Command Examples
@@ -139,19 +159,43 @@ POST /api/threads/{thread_id}/release
 
 ## 5. Overall Architecture
 
-```
-┌─────────────┐     ┌─────────────────────────────────────────┐     ┌─────────────┐
-│   Discord   │     │           Gateway Service :8081         │     │  MCP Servers│
-│             │     │                                         │     │             │
-│  ┌───────┐  │     │  ┌──────────┐  ┌──────────┐  ┌───────┐ │     │  ┌───────┐  │
-│  │ User  │◄─┼────►│  │WebSocket │  │ REST API │  │  SSE  │ │◄────┼──│GCP MCP│  │
-│  └───────┘  │     │  └──────────┘  └──────────┘  └───────┘ │     │  ├───────┤  │
-│             │     │        │            │            │       │     │  │OCI MCP│  │
-│  ┌───────┐  │     │        ▼            ▼            ▼       │     │  ├───────┤  │
-│  │Channel│◄─┼────►│  ┌────────────────────────────────────┐ │     │  │DB MCP │  │
-│  └───────┘  │     │  │         Thread Lock (Memory)       │ │     │  └───────┘  │
-└─────────────┘     │  └────────────────────────────────────┘ │     └─────────────┘
-                    └─────────────────────────────────────────┘
+```mermaid
+flowchart LR
+    %% Style definitions
+    classDef discord fill:#5865F2,stroke:#404EED,color:#fff
+    classDef gateway fill:#059669,stroke:#047857,color:#fff
+    classDef mcp fill:#8B5CF6,stroke:#7C3AED,color:#fff
+
+    subgraph Discord["💬 Discord"]
+        User[("👤 User")]
+        Channel[("📺 Channel")]
+    end
+
+    subgraph Gateway["🖥️ Gateway Service :8081"]
+        WS[("🔌 WebSocket")]
+        API[("📡 REST API")]
+        SSE[("📤 SSE")]
+        Lock[("🔒 Thread Lock<br/><small>Memory</small>")]
+    end
+
+    subgraph MCPS["⚡ MCP Servers"]
+        GCP["☁️ GCP MCP"]:::mcp
+        OCI["☁️ OCI MCP"]:::mcp
+        DB["🗄️ DB MCP"]:::mcp
+    end
+
+    User <--> Channel
+    Channel <--> WS
+    WS --> Lock
+    WS <--> API
+    API --> GCP
+    API --> OCI
+    API --> DB
+    API --> SSE
+    SSE --> User
+
+    class Discord discord
+    class Gateway gateway
 ```
 
 ---
