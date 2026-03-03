@@ -1,5 +1,5 @@
 +++
-title = "Introducing ZeroClaw: High-Performance Rust Agent Runtime"
+title = "[ZeroClaw] Intro - High-Performance Rust Agent Runtime"
 slug = "2026-02-27-introducing-zeroclaw"
 date = 2026-02-27T19:30:00+09:00
 draft = false

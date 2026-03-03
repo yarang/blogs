@@ -1,5 +1,5 @@
 +++
-title = "파일 기반 멀티 에이전트 아키텍처 설계"
+title = "[Multi-Agent] 파일 기반 아키텍처 설계"
 slug = "2026-02-27-001-file-based-multi-agent-architecture-design"
 date = 2026-02-27T09:30:57+09:00
 draft = false

@@ -1,5 +1,5 @@
 +++
-title = "MCP 배포 테스트"
+title = "[MCP] 배포 테스트"
 slug = "2026-02-23-001-mcp-deployment-test"
 date = 2026-02-23T00:15:11+09:00
 draft = false

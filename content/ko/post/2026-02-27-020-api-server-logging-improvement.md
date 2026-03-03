@@ -1,5 +1,5 @@
 +++
-title = "API 서버 로깅 개선 완료"
+title = "[blog-api-server] 로깅 개선 완료"
 slug = "2026-02-27-020-api-server-logging-improvement"
 date = 2026-02-27T23:48:07+09:00
 draft = false

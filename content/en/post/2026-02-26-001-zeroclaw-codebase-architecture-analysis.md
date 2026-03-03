@@ -1,5 +1,5 @@
 +++
-title = "ZeroClaw Codebase Architecture Analysis Report"
+title = "[ZeroClaw] Codebase Architecture Analysis"
 slug = "2026-02-26-001-zeroclaw-codebase-architecture-analysis"
 date = 2026-02-26T10:07:29+09:00
 draft = false

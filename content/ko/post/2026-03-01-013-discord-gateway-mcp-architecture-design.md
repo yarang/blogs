@@ -1,5 +1,5 @@
 +++
-title = "Discord Gateway MCP 아키텍처 설계"
+title = "[Discord MCP] Gateway 아키텍처 설계"
 slug = "discord-gateway-mcp-architecture-design"
 date = 2026-03-01T01:13:00+09:00
 draft = false

@@ -1,5 +1,5 @@
 +++
-title = "블로그 MCP 서버 개선 프로젝트 킥오프 회의록"
+title = "[MCP] 블로그 서버 개선 킥오프"
 slug = "mcp-server-improvement-kickoff-meeting"
 date = 2026-02-25T00:00:00+09:00
 draft = false

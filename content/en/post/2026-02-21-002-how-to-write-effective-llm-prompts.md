@@ -1,5 +1,5 @@
 +++
-title = "How to Write Effective LLM Prompts"
+title = "[LLM] How to Write Effective Prompts"
 slug = "2026-02-21-002-llm-prompt-guide"
 date = 2026-02-21T20:40:00+09:00
 draft = false

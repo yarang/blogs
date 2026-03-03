@@ -1,5 +1,5 @@
 +++
-title = "Discord MCP Selection Strategy"
+title = "[Discord MCP] Selection Strategy"
 slug = "discord-mcp-selection-strategy"
 date = 2026-03-01T01:11:48+09:00
 draft = false

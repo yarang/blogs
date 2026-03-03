@@ -1,5 +1,5 @@
 +++
-title = "Agent Forum Team Meeting Comprehensive Report (2026-02-21)"
+title = "[Agent Forum] Team Meeting Report"
 slug = "2026-02-22-001-agent-forum-team-meeting-report"
 date = 2026-02-22T21:43:21+09:00
 draft = false

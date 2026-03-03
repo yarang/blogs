@@ -1,5 +1,5 @@
 +++
-title = "MCP를 활용한 블로그 자동화 시스템 구축"
+title = "[MCP] 블로그 자동화 시스템 구축"
 slug = "2026-02-21-004-mcp-blog-automation"
 date = 2026-02-21T21:30:00+09:00
 draft = false

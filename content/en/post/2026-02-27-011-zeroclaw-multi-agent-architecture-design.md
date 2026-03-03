@@ -1,5 +1,5 @@
 +++
-title = "ZeroClaw Multi-Agent Architecture Design"
+title = "[ZeroClaw] Multi-Agent Architecture Design"
 slug = "2026-02-27-011-zeroclaw-multi-agent-architecture-design"
 date = 2026-02-27T22:58:08+09:00
 draft = false

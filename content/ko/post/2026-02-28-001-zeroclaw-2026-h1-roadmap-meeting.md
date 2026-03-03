@@ -1,5 +1,5 @@
 +++
-title = "ZeroClaw 2026 상반기 발전방향 팀 회의록"
+title = "[ZeroClaw] 2026 상반기 발전방향 회의록"
 slug = "2026-02-28-001-zeroclaw-2026-h1-roadmap-meeting"
 date = 2026-02-28T09:55:15+09:00
 draft = false

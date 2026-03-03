@@ -1,5 +1,5 @@
 +++
-title = "Hugo Blog on OCI with GitHub Actions"
+title = "[Hugo Blog] OCI + GitHub Actions Deployment"
 slug = "hugo-blog-deploy-oci"
 date = 2026-02-21T00:00:00+09:00
 draft = false

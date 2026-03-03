@@ -1,5 +1,5 @@
 +++
-title = "Claude Code Team Agent Communication Architecture Design"
+title = "[Claude Code] Team Agent Communication Architecture"
 slug = "2026-02-28-002-claude-code-team-agent-communication-architecture"
 date = 2026-02-28T14:07:38+09:00
 draft = false
