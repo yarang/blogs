@@ -5,6 +5,7 @@ defaultContentLanguageInSubdir = false
 hasCJKLanguage = true
 title = "Yarang's Tech Lair"
 theme = 'stack'
+googleAnalytics = 'G-4KWWB4Q3DM'
 
 [pagination]
     pagerSize = 10
@@ -145,7 +146,11 @@ rssFullContent = true
     enabled  = false
 
 [cookies]
-    enabled = false
+    enabled = true
 
 [outputs]
   home = ["HTML", "RSS", "JSON"]
+
+[privacy.googleAnalytics]
+  disable = false
+  respectDoNotTrack = true
