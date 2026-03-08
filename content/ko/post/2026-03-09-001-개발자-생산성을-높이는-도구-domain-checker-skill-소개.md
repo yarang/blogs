@@ -1,12 +1,10 @@
-+++
-title = "개발자 생산성을 높이는 도구: Domain Checker Skill 소개"
-date = 2026-03-09T00:20:37+09:00
-draft = false
-tags = ["\uac1c\ubc1c\uc790\ub3c4\uad6c", "\uc624\ud508\uc18c\uc2a4", "Claude", "AI", "\uc0dd\uc0b0\uc131", "\ub3c4\uba54\uc778"]
-categories = ["\uac1c\ubc1c\ub3c4\uad6c"]
-ShowToc = true
-TocOpen = true
-+++
+---
+title: "개발자 생산성을 높이는 도구: Domain Checker Skill 소개"
+date: 2026-03-09T00:20:00+09:00
+draft: false
+tags: ["개발자도구", "오픈소스", "Claude", "AI", "생산성", "도메인"]
+categories: ["개발도구"]
+---
 
 # 개발자 생산성을 높이는 도구: Domain Checker Skill 소개
 
@@ -151,5 +149,3 @@ AI와 자동화를 통해 일상의 작은 불편함을 해소하고, 우리는 
 
 **관련 프로젝트:**
 - [server-status-checker](https://github.com/yarang/skill-server-status-checker) - SSH config 기반 서버 상태 확인 도구
-
-**태그:** #개발자도구 #오픈소스 #Claude #AI #생산성 #도메인
