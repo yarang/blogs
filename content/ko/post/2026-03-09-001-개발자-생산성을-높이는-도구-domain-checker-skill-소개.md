@@ -149,3 +149,5 @@ AI와 자동화를 통해 일상의 작은 불편함을 해소하고, 우리는 
 
 **관련 프로젝트:**
 - [server-status-checker](https://github.com/yarang/skill-server-status-checker) - SSH config 기반 서버 상태 확인 도구
+
+**영어 버전:** [English Version](/en/post/2026-03-09-001-domain-checker-skill-introduction/)
