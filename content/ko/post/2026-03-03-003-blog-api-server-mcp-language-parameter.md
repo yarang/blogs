@@ -151,3 +151,7 @@ curl -X POST https://blog.fcoinfup.com/api/posts \
 ## 결론
 
 MCP 블로그 클라이언트에 언어 파라미터를 추가하여 Claude Code에서 더 편리하게 다국어 블로그를 관리할 수 있게 되었습니다.
+
+---
+
+**영어 버전:** [English Version](/en/post/2026-03-03-003-blog-api-server-mcp-language-parameter/)

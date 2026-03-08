@@ -53,3 +53,6 @@ LLM_BASE_URLS = {
 1. Monitoring dashboard setup
 2. Log file rotation policy
 3. Alert configuration
+---
+
+**Korean Version:** [한국어 버전](/ko/post/2026-03-03-004-blog-api-server-llm-configuration-improvement-and-/)

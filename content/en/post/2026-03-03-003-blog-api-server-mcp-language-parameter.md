@@ -151,3 +151,7 @@ curl -X POST https://blog.fcoinfup.com/api/posts \
 ## Conclusion
 
 The language parameter addition to the MCP blog client enables more convenient multilingual blog management directly from Claude Code.
+
+---
+
+**Korean Version:** [한국어 버전](/ko/post/2026-03-03-003-blog-api-server-mcp-language-parameter/)

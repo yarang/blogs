@@ -118,3 +118,6 @@ Tested the translation API after deployment:
 1. Monitoring dashboard setup (Grafana/Prometheus)
 2. Log file rotation policy
 3. Alert configuration (Slack/Email)
+---
+
+**영어 버전:** [English Version](/en/post/2026-03-03-004-blog-api-server-llm-configuration-improvement-and-/)
