@@ -50,10 +50,6 @@ theme = 'stack'
     description = "AI와 개발에 대한 기술 블로그"
     sidebar = { subtitle = "AI와 개발에 대한 기술 블로그" }
 
-  [languages.en.params]
-    description = "Tech blog about AI and Development"
-    sidebar = { subtitle = "Tech blog about AI and Development" }
-
 # Korean Menu
 [[languages.ko.menu.main]]
   identifier = "posts"
