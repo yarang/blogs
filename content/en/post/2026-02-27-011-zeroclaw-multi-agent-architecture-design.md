@@ -76,3 +76,8 @@ zeroclaw agent run --agent-id researcher
 | Subprocess | Process | Trusted agents |
 | Docker | Container | File operations |
 | Wasm | Memory | High security |
+
+
+---
+
+**Korean Version:** [한국어 버전](/ko/post/2026-02-27-011-zeroclaw-multi-agent-architecture-design/)

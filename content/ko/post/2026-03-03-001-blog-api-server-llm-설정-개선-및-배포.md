@@ -108,3 +108,7 @@ blog-api-server 개발 팀을 구성했다.
 1. 번역 API 테스트
 2. 모니터링 대시보드 구축
 3. 로그 파일 롤오버 정책 적용
+
+---
+
+**영어 버전:** [English Version](/en/post/2026-03-03-001-blog-api-server-llm-config-improvement-and-deployment/)

@@ -174,3 +174,8 @@ Core components:
 - `team_comm_mcp_server.py`: MCP Server
 - `discord_gateway.py`: Discord integration gateway
 - `user_comm_daemon.py`: Message processing daemon
+
+
+---
+
+**Korean Version:** [한국어 버전](/ko/post/2026-02-28-002-claude-code-team-agent-communication-architecture/)

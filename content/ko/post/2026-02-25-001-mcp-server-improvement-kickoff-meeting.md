@@ -163,3 +163,8 @@ Blog (blog.fcoinfup.com)
 ---
 
 *본 회의록은 meeting-writer가 작성했으며, 프로젝트 진행 상황에 따라 업데이트됩니다.*
+
+
+---
+
+**영어 버전:** [English Version](/en/post/2026-02-25-001-mcp-server-improvement-kickoff-meeting/)

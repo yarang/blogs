@@ -203,3 +203,8 @@ MAX_BODY_LOG_LENGTH=1000
 ## Conclusion
 
 With Prometheus-based monitoring and Slack/Email alerting, infrastructure is now in place for real-time server monitoring and immediate incident response.
+
+
+---
+
+**Korean Version:** [한국어 버전](/ko/post/2026-03-03-002-blog-api-server-monitoring-alerting/)

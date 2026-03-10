@@ -163,3 +163,8 @@ This meeting minutes includes:
 ---
 
 *This meeting minutes was prepared by meeting-writer and will be updated as the project progresses.*
+
+
+---
+
+**Korean Version:** [한국어 버전](/ko/post/2026-02-25-001-mcp-server-improvement-kickoff-meeting/)

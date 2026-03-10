@@ -245,3 +245,8 @@ class Agent:
 - [Actor Model - Wikipedia](https://en.wikipedia.org/wiki/Actor_model)
 - [Enterprise Integration Patterns](https://www.enterpriseintegrationpatterns.com/)
 - [Designing Data-Intensive Applications](https://dataintensive.net/)
+
+
+---
+
+**영어 버전:** [English Version](/en/post/2026-02-21-003-multi-agent-communication-platform/)

@@ -53,3 +53,8 @@ Total request time: ~4.8s
 ## Conclusion
 
 With detailed logging, each step of API requests can now be clearly tracked, making it easier to identify issues when they occur.
+
+
+---
+
+**Korean Version:** [한국어 버전](/ko/post/2026-02-27-020-api-server-logging-improvement/)

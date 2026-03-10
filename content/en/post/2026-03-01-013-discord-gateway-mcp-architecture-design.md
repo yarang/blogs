@@ -464,3 +464,8 @@ We chose a strategy of starting with a lightweight architecture and expanding wh
 | User Communication | Gateway direct | user_comm Agent |
 
 The current structure is sufficient for single instances, and we plan to expand incrementally as traffic grows. The user_comm Agent systematizes user communication and improves collaboration with other agents on the team.
+
+
+---
+
+**Korean Version:** [한국어 버전](/ko/post/2026-03-01-013-discord-gateway-mcp-architecture-design/)

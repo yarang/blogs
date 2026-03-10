@@ -103,3 +103,8 @@ git push
 - [Hugo Official Documentation](https://gohugo.io/)
 - [GitHub Actions Documentation](https://docs.github.com/actions)
 - [PaperMod Theme](https://github.com/adityatelange/hugo-PaperMod)
+
+
+---
+
+**Korean Version:** [한국어 버전](/ko/post/2026-02-21-001-hugo-blog-deploy-oci/)

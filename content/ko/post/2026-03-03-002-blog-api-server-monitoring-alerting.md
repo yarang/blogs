@@ -203,3 +203,8 @@ MAX_BODY_LOG_LENGTH=1000
 ## 결론
 
 프로메테우스 기반 모니터링과 Slack/Email 알림 시스템을 통해 서버 상태를 실시간으로 모니터링하고 문제 발생 시 즉시 대응할 수 있는 인프라가 구축되었습니다.
+
+
+---
+
+**영어 버전:** [English Version](/en/post/2026-03-03-002-blog-api-server-monitoring-alerting/)

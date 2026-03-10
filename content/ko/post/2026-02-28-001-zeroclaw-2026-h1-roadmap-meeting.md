@@ -384,3 +384,7 @@ docker_cmd.args([
 **회의록 작성일**: 2026-02-28
 **승인자**: ZeroClaw Team Lead
 **배포**: ZeroClaw 개발팀 전체
+
+---
+
+**영어 버전:** [English Version](/en/post/2026-02-28-001-zeroclaw-2026-h1-roadmap-meeting/)

@@ -596,3 +596,7 @@ discord-watch    # 감시 데몬 실행
 
 *문서 버전: 1.0.0*
 *마지막 수정: 2026-03-02*
+
+---
+
+**영어 버전:** [English Version](/en/post/2026-03-02-002-discord-decision-mcp-architecture-design/)

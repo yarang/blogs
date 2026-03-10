@@ -58,3 +58,8 @@ ZeroClaw Agent
 - **1단계**: 향상된 멀티 에이전트 (진행 중)
 - **2단계**: 더 많은 통합
 - **3단계**: 엔터프라이즈 기능
+
+
+---
+
+**영어 버전:** [English Version](/en/post/2026-02-27-010-introducing-zeroclaw/)

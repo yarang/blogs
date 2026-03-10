@@ -285,3 +285,8 @@ This system is continuously extensible, with potential additions like image proc
 - [Model Context Protocol](https://modelcontextprotocol.io/)
 - [MCP Python SDK](https://github.com/modelcontextprotocol/python-sdk)
 - [Hugo Documentation](https://gohugo.io/documentation/)
+
+
+---
+
+**Korean Version:** [한국어 버전](/ko/post/2026-02-21-004-mcp-blog-automation/)

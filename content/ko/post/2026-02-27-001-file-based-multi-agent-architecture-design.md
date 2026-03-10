@@ -233,3 +233,8 @@ zeroclaw agent validate <agent_id>
 - [ ] 실패한 에이전트가 메인 에이전트 크래시 유발하지 않음
 - [ ] 에이전트별 보안 정책 적용
 - [ ] 에이전트 관리 CLI 명령어
+
+
+---
+
+**영어 버전:** [English Version](/en/post/2026-02-27-001-file-based-multi-agent-architecture-design/)

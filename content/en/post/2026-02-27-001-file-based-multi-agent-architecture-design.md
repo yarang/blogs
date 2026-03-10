@@ -233,3 +233,7 @@ zeroclaw agent validate <agent_id>
 - [ ] Failed agents don't crash main agent
 - [ ] Security policy enforced per-agent
 - [ ] CLI commands for agent management
+
+---
+
+**Korean Version:** [한국어 버전](/ko/post/2026-02-27-001-file-based-multi-agent-architecture-design/)

@@ -58,3 +58,8 @@ ZeroClaw Agent
 - **Phase 1**: Enhanced Multi-Agent (In Progress)
 - **Phase 2**: More Integrations
 - **Phase 3**: Enterprise Features
+
+
+---
+
+**Korean Version:** [한국어 버전](/ko/post/2026-02-27-010-introducing-zeroclaw/)

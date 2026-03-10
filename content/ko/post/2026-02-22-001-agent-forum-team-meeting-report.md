@@ -112,3 +112,7 @@ Agent Forum 프로젝트의 전반적인 현황을 파악하고 개선이 필요
 
 **보고서 작성:** meeting-recorder
 **승인:** team-lead
+
+---
+
+**영어 버전:** [English Version](/en/post/2026-02-22-001-agent-forum-team-meeting-report/)

@@ -77,3 +77,8 @@ ZeroClaw has an excellent architecture in terms of extensibility, security, perf
 ---
 
 *This report was written based on collaborative analysis by the ZeroClaw development team.*
+
+
+---
+
+**Korean Version:** [한국어 버전](/ko/post/2026-02-26-001-zeroclaw-codebase-architecture-analysis/)

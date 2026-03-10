@@ -137,3 +137,8 @@ Good prompts are clear, specific, and provide necessary context. Practice to imp
 
 - [OpenAI Prompt Engineering Guide](https://platform.openai.com/docs/guides/prompt-engineering)
 - [Anthropic Claude Prompt Engineering](https://docs.anthropic.com/claude/docs/prompt-engineering)
+
+
+---
+
+**Korean Version:** [한국어 버전](/ko/post/2026-02-21-002-llm-prompt-guide/)

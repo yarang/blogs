@@ -58,3 +58,7 @@ Task, TaskResult, Query, QueryResponse, Stream, Event, Heartbeat, Ack, Error, Co
 ---
 
 *이 문서는 ZeroClaw 개발 팀의 협업으로 작성되었습니다.*
+
+---
+
+**영어 버전:** [English Version](/en/post/2026-02-26-003-zeroclaw-multi-agent-protocol-design/)

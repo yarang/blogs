@@ -464,3 +464,8 @@ curl http://localhost:8081/health
 | 사용자 소통 | Gateway 직접 | user_comm Agent |
 
 단일 인스턴스에서는 현재 구조로 충분하며, 트래픽이 늘어나면 점진적으로 확장할 계획이다. user_comm Agent를 통해 사용자와의 소통을 체계화하고, 팀 내 다른 agent들과의 협업을 효율화한다.
+
+
+---
+
+**영어 버전:** [English Version](/en/post/2026-03-01-013-discord-gateway-mcp-architecture-design/)

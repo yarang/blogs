@@ -112,3 +112,8 @@ Remaining 10 tasks:
 
 **Report written by:** meeting-recorder
 **Approved by:** team-lead
+
+
+---
+
+**Korean Version:** [한국어 버전](/ko/post/2026-02-22-001-agent-forum-team-meeting-report/)

@@ -245,3 +245,8 @@ Based on these principles, scalable and reliable multi-agent systems can be buil
 - [Actor Model - Wikipedia](https://en.wikipedia.org/wiki/Actor_model)
 - [Enterprise Integration Patterns](https://www.enterpriseintegrationpatterns.com/)
 - [Designing Data-Intensive Applications](https://dataintensive.net/)
+
+
+---
+
+**Korean Version:** [한국어 버전](/ko/post/2026-02-21-003-multi-agent-platform/)

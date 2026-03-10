@@ -136,3 +136,8 @@ useState와 useEffect의 차이점을 예제 코드와 함께 설명해줘.
 
 - [OpenAI Prompt Engineering Guide](https://platform.openai.com/docs/guides/prompt-engineering)
 - [Anthropic Claude Prompt Engineering](https://docs.anthropic.com/claude/docs/prompt-engineering)
+
+
+---
+
+**영어 버전:** [English Version](/en/post/2026-02-21-002-how-to-write-effective-llm-prompts/)

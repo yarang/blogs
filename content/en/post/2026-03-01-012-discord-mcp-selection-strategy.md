@@ -93,3 +93,8 @@ flowchart TD
     F -->|Yes| C
     F -->|No| G[Broadcast]
 ```
+
+
+---
+
+**Korean Version:** [한국어 버전](/ko/post/2026-03-01-012-discord-mcp-selection-strategy/)

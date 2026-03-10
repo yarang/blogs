@@ -53,3 +53,7 @@ Git push: ~2.5초
 ## 결론
 
 상세 로깅을 통해 API 요청의 각 단계를 명확히 추적할 수 있게 되었으며, 문제 발생 시 원인 파악이 용이해졌습니다.
+
+---
+
+**영어 버전:** [English Version](/en/post/2026-02-27-020-api-server-logging-improvement/)

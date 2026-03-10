@@ -174,3 +174,8 @@ SQLite Message Hub + MCP Server 조합이 Claude Code 팀 에이전트 통신에
 - `team_comm_mcp_server.py`: MCP Server
 - `discord_gateway.py`: Discord 연동 게이트웨이
 - `user_comm_daemon.py`: 메시지 처리 데몬
+
+
+---
+
+**영어 버전:** [English Version](/en/post/2026-02-28-002-claude-code-team-agent-communication-architecture/)

@@ -596,3 +596,8 @@ discord-watch    # Run watcher daemon
 
 *Document Version: 1.0.0*
 *Last Modified: 2026-03-02*
+
+
+---
+
+**Korean Version:** [한국어 버전](/ko/post/2026-03-02-002-discord-decision-mcp-architecture-design/)

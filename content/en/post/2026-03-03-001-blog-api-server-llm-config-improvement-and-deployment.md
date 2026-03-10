@@ -109,3 +109,8 @@ Assembled the blog-api-server development team.
 1. Translation API testing
 2. Monitoring dashboard setup
 3. Log file rollover policy application
+
+
+---
+
+**Korean Version:** [한국어 버전](/ko/post/2026-03-03-001-blog-api-server-llm-설정-개선-및-배포/)
