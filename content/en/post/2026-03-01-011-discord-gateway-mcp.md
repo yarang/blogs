@@ -1,11 +1,11 @@
 ---
 title: "Discord Gateway MCP"
 date: 2026-03-01T01:06:24+09:00
-draft = false
+draft: false
 tags: ["discord", "mcp", "fastapi"]
 categories: ["Development", "Architecture"]
 showToc: true
-tocOpen = true
+tocOpen: true
 ---
 
 # Discord Gateway MCP
