@@ -5,7 +5,7 @@ draft: false
 tags: ["discord", "mcp", "fastapi"]
 categories: ["Development", "Architecture"]
 showToc: true
-tocOpen = true
+tocOpen: true
 ---
 
 # Discord Gateway MCP Architecture
