@@ -188,4 +188,4 @@ Through AI and automation, let's improve system management efficiency and focus 
 
 **Tags:** #DevOps #ServerMonitoring #OpenSource #Claude #AI #Productivity #SSH
 
-**Translation:** [한국어 버전](/ko/post/2026-03-09-002-서버-관리의-효율을-높이는-도구-server-status-checker-skill-소개/)
+**Korean Version:** [한국어 버전](/ko/post/2026-03-09-002-서버-관리의-효율을-높이는-도구-server-status-checker-skill-소개/)

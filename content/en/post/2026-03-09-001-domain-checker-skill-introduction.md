@@ -152,4 +152,4 @@ By solving small daily inconveniences with AI and automation, we can create grea
 
 **Tags:** #DevTools #OpenSource #Claude #AI #Productivity #Domain
 
-**Translation:** [한국어 버전](/ko/post/2026-03-09-001-개발자-생산성을-높이는-도구-domain-checker-skill-소개/)
+**Korean Version:** [한국어 버전](/ko/post/2026-03-09-001-개발자-생산성을-높이는-도구-domain-checker-skill-소개/)
