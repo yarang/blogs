@@ -364,4 +364,4 @@ timeline
 
 ---
 
-**영어 버전:** [English Version](/en/post/2026-03-01-005-discord-gateway-mcp-architecture-design/)
+**영어 버전:** [English Version](/post/2026-03-01-005-discord-gateway-mcp-architecture-design/)

@@ -178,4 +178,4 @@ SQLite Message Hub + MCP Server 조합이 Claude Code 팀 에이전트 통신에
 
 ---
 
-**영어 버전:** [English Version](/en/post/2026-02-28-002-claude-code-team-agent-communication-architecture/)
+**영어 버전:** [English Version](/post/2026-02-28-002-claude-code-team-agent-communication-architecture/)

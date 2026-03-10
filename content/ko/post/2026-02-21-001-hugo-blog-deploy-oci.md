@@ -107,4 +107,4 @@ git push
 
 ---
 
-**영어 버전:** [English Version](/en/post/2026-02-21-001-hugo-blog-deploy-oci/)
+**영어 버전:** [English Version](/post/2026-02-21-001-hugo-blog-deploy-oci/)

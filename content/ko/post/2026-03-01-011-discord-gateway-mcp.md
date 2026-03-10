@@ -55,4 +55,4 @@ uvicorn gateway.main:app --port 8081
 
 ---
 
-**영어 버전:** [English Version](/en/post/2026-03-01-011-discord-gateway-mcp/)
+**영어 버전:** [English Version](/post/2026-03-01-011-discord-gateway-mcp/)

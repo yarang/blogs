@@ -237,4 +237,4 @@ zeroclaw agent validate <agent_id>
 
 ---
 
-**영어 버전:** [English Version](/en/post/2026-02-27-001-file-based-multi-agent-architecture-design/)
+**영어 버전:** [English Version](/post/2026-02-27-001-file-based-multi-agent-architecture-design/)

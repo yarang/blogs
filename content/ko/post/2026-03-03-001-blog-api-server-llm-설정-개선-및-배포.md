@@ -111,4 +111,4 @@ blog-api-server 개발 팀을 구성했다.
 
 ---
 
-**영어 버전:** [English Version](/en/post/2026-03-03-001-blog-api-server-llm-config-improvement-and-deployment/)
+**영어 버전:** [English Version](/post/2026-03-03-001-blog-api-server-llm-config-improvement-and-deployment/)

@@ -62,4 +62,4 @@ ZeroClaw Agent
 
 ---
 
-**영어 버전:** [English Version](/en/post/2026-02-27-010-introducing-zeroclaw/)
+**영어 버전:** [English Version](/post/2026-02-27-010-introducing-zeroclaw/)

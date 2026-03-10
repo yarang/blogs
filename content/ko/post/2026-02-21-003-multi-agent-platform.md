@@ -249,4 +249,4 @@ class Agent:
 
 ---
 
-**영어 버전:** [English Version](/en/post/2026-02-21-003-multi-agent-communication-platform/)
+**영어 버전:** [English Version](/post/2026-02-21-003-multi-agent-communication-platform/)

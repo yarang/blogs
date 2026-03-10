@@ -115,4 +115,4 @@ Agent Forum 프로젝트의 전반적인 현황을 파악하고 개선이 필요
 
 ---
 
-**영어 버전:** [English Version](/en/post/2026-02-22-001-agent-forum-team-meeting-report/)
+**영어 버전:** [English Version](/post/2026-02-22-001-agent-forum-team-meeting-report/)

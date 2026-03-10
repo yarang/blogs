@@ -188,4 +188,4 @@ AI와 자동화를 통해 시스템 관리의 효율성을 높이고, 우리는 
 
 **태그:** #DevOps #서버모니터링 #오픈소스 #Claude #AI #생산성 #SSH
 
-**영어 버전:** [English Version](/en/post/2026-03-09-002-server-status-checker-skill-introduction/)
+**영어 버전:** [English Version](/post/2026-03-09-002-server-status-checker-skill-introduction/)

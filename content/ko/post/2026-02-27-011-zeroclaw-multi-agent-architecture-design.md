@@ -79,4 +79,4 @@ zeroclaw agent run --agent-id researcher
 
 ---
 
-**영어 버전:** [English Version](/en/post/2026-02-27-011-zeroclaw-multi-agent-architecture-design/)
+**영어 버전:** [English Version](/post/2026-02-27-011-zeroclaw-multi-agent-architecture-design/)

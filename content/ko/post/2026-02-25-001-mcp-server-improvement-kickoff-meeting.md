@@ -167,4 +167,4 @@ Blog (blog.fcoinfup.com)
 
 ---
 
-**영어 버전:** [English Version](/en/post/2026-02-25-001-mcp-server-improvement-kickoff-meeting/)
+**영어 버전:** [English Version](/post/2026-02-25-001-mcp-server-improvement-kickoff-meeting/)

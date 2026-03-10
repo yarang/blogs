@@ -95,4 +95,4 @@ curl http://localhost:8081/health
 
 ---
 
-**영어 버전:** [English Version](/en/post/2026-03-01-009-discord-gateway-mcp-architecture/)
+**영어 버전:** [English Version](/post/2026-03-01-009-discord-gateway-mcp-architecture/)

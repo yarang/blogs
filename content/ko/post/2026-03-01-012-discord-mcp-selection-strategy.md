@@ -97,4 +97,4 @@ flowchart TD
 
 ---
 
-**영어 버전:** [English Version](/en/post/2026-03-01-012-discord-mcp-selection-strategy/)
+**영어 버전:** [English Version](/post/2026-03-01-012-discord-mcp-selection-strategy/)

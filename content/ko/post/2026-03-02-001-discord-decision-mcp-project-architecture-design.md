@@ -202,4 +202,4 @@ discord-watch    # 감시 데몬 실행
 
 ---
 
-**영어 버전:** [English Version](/en/post/2026-03-02-001-discord-decision-mcp-project-architecture-design/)
+**영어 버전:** [English Version](/post/2026-03-02-001-discord-decision-mcp-project-architecture-design/)

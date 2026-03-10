@@ -387,4 +387,4 @@ docker_cmd.args([
 
 ---
 
-**영어 버전:** [English Version](/en/post/2026-02-28-001-zeroclaw-2026-h1-roadmap-meeting/)
+**영어 버전:** [English Version](/post/2026-02-28-001-zeroclaw-2026-h1-roadmap-meeting/)

@@ -207,4 +207,4 @@ MAX_BODY_LOG_LENGTH=1000
 
 ---
 
-**영어 버전:** [English Version](/en/post/2026-03-03-002-blog-api-server-monitoring-alerting/)
+**영어 버전:** [English Version](/post/2026-03-03-002-blog-api-server-monitoring-alerting/)

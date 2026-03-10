@@ -61,4 +61,4 @@ Task, TaskResult, Query, QueryResponse, Stream, Event, Heartbeat, Ack, Error, Co
 
 ---
 
-**영어 버전:** [English Version](/en/post/2026-02-26-003-zeroclaw-multi-agent-protocol-design/)
+**영어 버전:** [English Version](/post/2026-02-26-003-zeroclaw-multi-agent-protocol-design/)

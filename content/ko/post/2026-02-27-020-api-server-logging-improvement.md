@@ -56,4 +56,4 @@ Git push: ~2.5초
 
 ---
 
-**영어 버전:** [English Version](/en/post/2026-02-27-020-api-server-logging-improvement/)
+**영어 버전:** [English Version](/post/2026-02-27-020-api-server-logging-improvement/)

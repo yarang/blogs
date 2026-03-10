@@ -296,4 +296,4 @@ MCP를 활용한 블로그 자동화 시스템을 통해:
 
 ---
 
-**영어 버전:** [English Version](/en/post/2026-02-21-004-mcp-blog-automation/)
+**영어 버전:** [English Version](/post/2026-02-21-004-mcp-blog-automation/)

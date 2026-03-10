@@ -154,4 +154,4 @@ MCP 블로그 클라이언트에 언어 파라미터를 추가하여 Claude Code
 
 ---
 
-**영어 버전:** [English Version](/en/post/2026-03-03-003-blog-api-server-mcp-language-parameter/)
+**영어 버전:** [English Version](/post/2026-03-03-003-blog-api-server-mcp-language-parameter/)
