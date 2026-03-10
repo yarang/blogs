@@ -160,3 +160,7 @@ sudo certbot renew --dry-run
 ## 결론
 
 blog.agentthread.dev 도메인이 성공적으로 추가되었으며, 유효한 SSL 인증서를 통해 안전한 HTTPS 접속이 가능합니다. 두 도메인이 동일한 콘텐츠를 제공하며 사용자는 선호하는 도메인을 선택하여 접속할 수 있습니다.
+
+---
+
+**영어 버전:** [English Version](/en/post/2026-03-10-001-ssl-certificate-multi-domain-support-blogagentthreaddev/)
