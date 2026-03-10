@@ -92,3 +92,7 @@ curl http://localhost:8081/health
 ---
 
 **결론**: 가벼운 아키텍처로 시작, 필요시 확장 전략
+
+---
+
+**영어 버전:** [English Version](/en/post/2026-03-01-009-discord-gateway-mcp-architecture/)

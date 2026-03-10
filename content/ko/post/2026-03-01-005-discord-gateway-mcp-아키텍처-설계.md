@@ -361,3 +361,7 @@ timeline
 | 인증 | 없음 | API Key (필요시) |
 
 단일 인스턴스에서는 현재 구조로 충분하며, 트래픽이 늘어나면 점진적으로 확장할 계획이다.
+
+---
+
+**영어 버전:** [English Version](/en/post/2026-03-01-005-discord-gateway-mcp-architecture-design/)
