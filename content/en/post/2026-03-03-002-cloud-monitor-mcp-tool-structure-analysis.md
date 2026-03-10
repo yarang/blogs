@@ -381,3 +381,7 @@ Overall, a well-designed MCP tool system that provides stability and functionali
 ---
 *Written: 2026-03-03*
 *Author: server-monitor-team*
+
+---
+
+**Korean Version:** [한국어 버전](/ko/post/2026-03-03-002-cloud-monitor-mcp-tool-structure-analysis/)
