@@ -54,9 +54,10 @@ GITHUB_TOKEN_FILE = os.environ.get('GITHUB_TOKEN_FILE', '')
 if GITHUB_TOKEN_FILE and os.path.exists(GITHUB_TOKEN_FILE):
     # 토큰 파일 권한 검증
     st = os.stat(GITHUB_TOKEN_FILE)
-    if st.st_mode & (stat.S_IRWXO | stat.S_IRWXG):
+    # 다른 사용자에게 쓰기 권한이 있으면 거부
+    if st.st_mode & stat.S_IWOTH:
         logger.error("Token file has insecure permissions")
-        raise PermissionError("Token file must be 600 or 400")
+        raise PermissionError("Token file must not be world-writable")
     with open(GITHUB_TOKEN_FILE, 'r') as f:
         GITHUB_TOKEN = f.read().strip()
 else:
@@ -105,9 +106,10 @@ if WEBHOOK_SECRET_FILE:
     try:
         if os.path.exists(WEBHOOK_SECRET_FILE):
             st = os.stat(WEBHOOK_SECRET_FILE)
-            if st.st_mode & (stat.S_IRWXO | stat.S_IRWXG):
+            # 다른 사용자에게 쓰기 권한이 있으면 거부
+            if st.st_mode & stat.S_IWOTH:
                 logger.error("Webhook secret file has insecure permissions")
-                raise PermissionError("Webhook secret file must be 600 or 400")
+                raise PermissionError("Webhook secret file must not be world-writable")
             with open(WEBHOOK_SECRET_FILE, 'r') as f:
                 WEBHOOK_SECRET = f.read().strip()
             logger.info(f"Webhook secret loaded from file: {WEBHOOK_SECRET_FILE}")
@@ -232,6 +234,9 @@ def analyze_comment(context: str, comment: str) -> str:
 
 def get_discussion_graphql_id(repo_owner: str, repo_name: str, discussion_number: int) -> str:
     """Discussion의 GraphQL ID 가져오기"""
+    logger.info(f"Fetching Discussion ID: {repo_owner}/{repo_name} #{discussion_number}")
+    logger.info(f"GITHUB_TOKEN configured: {bool(GITHUB_TOKEN)}")
+
     query = """
     query($owner: String!, $name: String!, $number: Int!) {
         repository(owner: $owner, name: $name) {
@@ -248,19 +253,32 @@ def get_discussion_graphql_id(repo_owner: str, repo_name: str, discussion_number
         "number": discussion_number
     }
 
-    response = requests.post(
-        GITHUB_API_URL,
-        json={"query": query, "variables": variables},
-        headers={
-            "Authorization": f"Bearer {GITHUB_TOKEN}",
-            "Content-Type": "application/json"
-        },
-        timeout=10
-    )
+    logger.info(f"GraphQL variables: {variables}")
 
-    if response.status_code == 200:
-        data = response.json()
-        return data.get("data", {}).get("repository", {}).get("discussion", {}).get("id")
+    try:
+        response = requests.post(
+            GITHUB_API_URL,
+            json={"query": query, "variables": variables},
+            headers={
+                "Authorization": f"Bearer {GITHUB_TOKEN}",
+                "Content-Type": "application/json"
+            },
+            timeout=10
+        )
+
+        logger.info(f"GitHub API response status: {response.status_code}")
+        logger.info(f"GitHub API response body: {response.text[:500]}")
+
+        if response.status_code == 200:
+            data = response.json()
+            logger.info(f"GraphQL response data: {data}")
+            discussion_id = data.get("data", {}).get("repository", {}).get("discussion", {}).get("id")
+            logger.info(f"Extracted Discussion ID: {discussion_id}")
+            return discussion_id
+        else:
+            logger.error(f"GitHub API returned status {response.status_code}: {response.text}")
+    except Exception as e:
+        logger.error(f"Exception in get_discussion_graphql_id: {e}", exc_info=True)
 
     return None
 

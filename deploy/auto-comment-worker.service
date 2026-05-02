@@ -9,9 +9,8 @@ WorkingDirectory=/var/www/auto-comment-worker
 Environment=PORT=8081
 Environment=CLAUDE_CODE_PATH=/home/ubuntu/.local/bin/claude
 Environment=BLOG_OWNERS=yarang
-Environment=GITHUB_WEBHOOK_SECRET=PVx8kbRhIR2KrODtTVdrI01pLi8OJrAsjTXd0QhqK9I=
-LoadCredential=github_token:.github-token
-Environment=GITHUB_TOKEN_FILE=%d/github_token
+Environment=GITHUB_TOKEN_FILE=/etc/auto-comment-worker/github-token
+Environment=GITHUB_WEBHOOK_SECRET_FILE=/etc/auto-comment-worker/credentials/webhook-secret
 ExecStart=/var/www/auto-comment-worker/venv/bin/python /var/www/auto-comment-worker/scripts/auto-comment-worker.py
 Restart=always
 RestartSec=10
@@ -27,7 +26,7 @@ PrivateTmp=true
 ProtectSystem=strict
 ProtectHome=false
 ReadWritePaths=/var/www/auto-comment-worker /var/log/auto-comment-worker
-ReadOnlyPaths=/etc/auto-comment-worker
+ReadOnlyPaths=
 
 # 리소스 제한
 MemoryMax=512M
