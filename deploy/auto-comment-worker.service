@@ -9,10 +9,9 @@ WorkingDirectory=/var/www/auto-comment-worker
 Environment=PORT=8081
 Environment=CLAUDE_CODE_PATH=/home/ubuntu/.local/bin/claude
 Environment=BLOG_OWNERS=yarang
+Environment=GITHUB_WEBHOOK_SECRET=PVx8kbRhIR2KrODtTVdrI01pLi8OJrAsjTXd0QhqK9I=
 LoadCredential=github_token:.github-token
-LoadCredential=webhook_secret:webhook-secret
 Environment=GITHUB_TOKEN_FILE=%d/github_token
-Environment=GITHUB_WEBHOOK_SECRET_FILE=%d/webhook_secret
 ExecStart=/var/www/auto-comment-worker/venv/bin/python /var/www/auto-comment-worker/scripts/auto-comment-worker.py
 Restart=always
 RestartSec=10
