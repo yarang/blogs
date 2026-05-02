@@ -150,6 +150,16 @@ rssFullContent = true
 [outputs]
   home = ["HTML", "RSS", "JSON"]
 
+
 [params.giscus]
-  data-repo = "R_kgDORVIAzA"
-  data-category = "DIC_kwDORVIAzM4C8LO7"
+    repo = "yarang/blogs"
+    repoId = "R_kgDORVIAzA"  # giscus.app에서 생성된 값
+    category = "General"
+    categoryId = "DIC_kwDORVIAzM4C8LO7"  # giscus.app에서 생성된 값
+    mapping = "pathname"
+    strict = "0"
+    reactionsEnabled = "1"
+    emitMetadata = "0"
+    inputPosition = "bottom"
+    lang = "ko"
+    theme = "noborder_gray"
