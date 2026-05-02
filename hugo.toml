@@ -142,6 +142,7 @@ rssFullContent = true
     page     = [{ type = "toc" }]
 
 [comments]
+    provider = "giscus"
     enabled  = true
 
 [cookies]
