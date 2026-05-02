@@ -1,0 +1,23 @@
+[Unit]
+Description=Auto Comment Worker for Blog
+After=network.target
+
+[Service]
+Type=simple
+User=ubuntu
+WorkingDirectory=/var/www/auto-comment-worker
+Environment="PORT=8081"
+Environment="GITHUB_TOKEN_FILE=/var/www/auto-comment-worker/.github-token"
+Environment="CLAUDE_CODE_PATH=/home/ubuntu/.local/bin/claude"
+Environment="BLOG_OWNERS=yarang"
+ExecStart=/usr/bin/python3 /var/www/auto-comment-worker/auto-comment-worker.py
+Restart=always
+RestartSec=10
+
+# Logging
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=auto-comment-worker
+
+[Install]
+WantedBy=multi-user.target
