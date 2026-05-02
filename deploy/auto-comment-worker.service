@@ -7,9 +7,11 @@ Type=simple
 User=ubuntu
 WorkingDirectory=/var/www/auto-comment-worker
 Environment="PORT=8081"
-Environment="GITHUB_TOKEN_FILE=/var/www/auto-comment-worker/.github-token"
+LoadCredential=github_token:.github-token
+Environment="GITHUB_TOKEN_FILE=${CREDENTIALS_DIRECTORY}/github_token"
 Environment="CLAUDE_CODE_PATH=/home/ubuntu/.local/bin/claude"
 Environment="BLOG_OWNERS=yarang"
+Environment="GITHUB_WEBHOOK_SECRET_FILE=${CREDENTIALS_DIRECTORY}/webhook_secret"
 ExecStart=/usr/bin/python3 /var/www/auto-comment-worker/auto-comment-worker.py
 Restart=always
 RestartSec=10
@@ -18,6 +20,13 @@ RestartSec=10
 StandardOutput=journal
 StandardError=journal
 SyslogIdentifier=auto-comment-worker
+
+# Security
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/www/auto-comment-worker
 
 [Install]
 WantedBy=multi-user.target

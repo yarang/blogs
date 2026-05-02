@@ -3,8 +3,15 @@ import os
 import json
 import requests
 import logging
+import hmac
+import hashlib
+import html
+import re
+import stat
 from flask import Flask, request, jsonify
 from subprocess import run
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
 
 # 로깅 설정
 logging.basicConfig(
@@ -15,9 +22,22 @@ logger = logging.getLogger(__name__)
 
 app = Flask(__name__)
 
+# 속도 제한 설정
+limiter = Limiter(
+    app=app,
+    key_func=get_remote_address,
+    default_limits=["10 per minute"],
+    storage_uri="memory://"
+)
+
 # 환경 변수
 GITHUB_TOKEN_FILE = os.environ.get('GITHUB_TOKEN_FILE', '')
 if GITHUB_TOKEN_FILE and os.path.exists(GITHUB_TOKEN_FILE):
+    # 토큰 파일 권한 검증
+    st = os.stat(GITHUB_TOKEN_FILE)
+    if st.st_mode & (stat.S_IRWXO | stat.S_IRWXG):
+        logger.error("Token file has insecure permissions")
+        raise PermissionError("Token file must be 600 or 400")
     with open(GITHUB_TOKEN_FILE, 'r') as f:
         GITHUB_TOKEN = f.read().strip()
 else:
@@ -26,8 +46,66 @@ CLAUDE_CODE_PATH = os.environ.get('CLAUDE_CODE_PATH', '/home/ubuntu/.local/bin/c
 AGENTFORGE_CONFIG = os.path.expanduser('~/.agent_forge_for_zai.json')
 GITHUB_API_URL = "https://api.github.com/graphql"
 
+# 웹훅 시크릿 로드
+WEBHOOK_SECRET_FILE = os.environ.get('GITHUB_WEBHOOK_SECRET_FILE', '')
+if WEBHOOK_SECRET_FILE and os.path.exists(WEBHOOK_SECRET_FILE):
+    st = os.stat(WEBHOOK_SECRET_FILE)
+    if st.st_mode & (stat.S_IRWXO | stat.S_IRWXG):
+        logger.error("Webhook secret file has insecure permissions")
+        raise PermissionError("Webhook secret file must be 600 or 400")
+    with open(WEBHOOK_SECRET_FILE, 'r') as f:
+        WEBHOOK_SECRET = f.read().strip()
+else:
+    WEBHOOK_SECRET = os.environ.get('GITHUB_WEBHOOK_SECRET', '')
+
 # 블로그 소유주 (답변하지 않을 사용자 목록)
 BLOG_OWNERS = os.environ.get('BLOG_OWNERS', 'yarang').split(',')
+
+def sanitize_comment(body: str) -> str:
+    """사용자 입력 sanitization"""
+    if not body:
+        return body
+    # HTML 태그 제거
+    body = re.sub(r'<[^>]+>', '', body)
+    # HTML 엔티티 이스케이프
+    body = html.escape(body)
+    # 길이 제한
+    body = body[:1000]
+    return body
+
+def verify_webhook_signature(payload: bytes, signature: str) -> bool:
+    """GitHub 웹훅 시그니처 검증"""
+    if not signature:
+        logger.warning("Missing webhook signature")
+        return False
+
+    if not WEBHOOK_SECRET:
+        logger.error("GITHUB_WEBHOOK_SECRET not configured")
+        return False
+
+    try:
+        hash_algorithm, github_signature = signature.split('=', 1)
+        if hash_algorithm != 'sha256':
+            logger.warning(f"Invalid hash algorithm: {hash_algorithm}")
+            return False
+
+        mac = hmac.new(WEBHOOK_SECRET.encode(), msg=payload, digestmod=hashlib.sha256)
+        expected_signature = mac.hexdigest()
+
+        if not hmac.compare_digest(expected_signature, github_signature):
+            logger.warning("Invalid webhook signature")
+            return False
+
+        return True
+    except Exception as e:
+        logger.error(f"Signature verification error: {e}")
+        return False
+
+def mask_username(username: str) -> str:
+    """사용자명 마스킹"""
+    if not username or len(username) < 4:
+        return "***"
+    return f"{username[:3]}***"
 
 def _is_ai_generated_comment(body: str) -> bool:
     """AI가 생성한 댓글인지 식별"""
@@ -98,7 +176,8 @@ def get_discussion_graphql_id(repo_owner: str, repo_name: str, discussion_number
         headers={
             "Authorization": f"Bearer {GITHUB_TOKEN}",
             "Content-Type": "application/json"
-        }
+        },
+        timeout=10
     )
 
     if response.status_code == 200:
@@ -109,17 +188,22 @@ def get_discussion_graphql_id(repo_owner: str, repo_name: str, discussion_number
 
 def post_reply_graphql(discussion_graphql_id: str, original_comment: str, original_author: str, reply: str) -> bool:
     """GraphQL API로 Discussion에 응답 게시"""
+    # 입력 sanitization 적용
+    safe_comment = sanitize_comment(original_comment)
+    safe_author = sanitize_comment(original_author)
+    safe_reply = sanitize_comment(reply)
+
     body = f"""---
 **🤖 AI 어시스턴트**
 
-{reply}
+{safe_reply}
 
 *이 댓글은 AgentForge + Claude Code로 자동 생성되었습니다.*
 
 ---
 
-@{original_author} 님이 원래 작성한 댓글:
-> {original_comment[:200]}...
+@{safe_author} 님이 원래 작성한 댓글:
+> {safe_comment[:200]}...
 """
 
     query = """
@@ -144,7 +228,8 @@ def post_reply_graphql(discussion_graphql_id: str, original_comment: str, origin
         headers={
             "Authorization": f"Bearer {GITHUB_TOKEN}",
             "Content-Type": "application/json"
-        }
+        },
+        timeout=10
     )
 
     if response.status_code == 200:
@@ -157,8 +242,14 @@ def post_reply_graphql(discussion_graphql_id: str, original_comment: str, origin
     return False
 
 @app.route('/webhook', methods=['POST'])
+@limiter.limit("10 per minute")
 def github_webhook():
     """GitHub Webhook 수신"""
+    # 시그니처 검증
+    signature = request.headers.get('X-Hub-Signature-256')
+    if not verify_webhook_signature(request.data, signature):
+        return jsonify({'status': 'unauthorized'}), 401
+
     payload = request.json
 
     logger.info(f"Payload keys: {list(payload.keys())}")
@@ -172,9 +263,9 @@ def github_webhook():
     discussion = payload.get('discussion', {})
     repository = payload.get('repository', {})
 
-    comment_body = comment.get('body', '')
-    discussion_title = discussion.get('title', '')
-    discussion_body = discussion.get('body', '')
+    comment_body = sanitize_comment(comment.get('body', ''))
+    discussion_title = sanitize_comment(discussion.get('title', ''))
+    discussion_body = sanitize_comment(discussion.get('body', ''))
     repo_full_name = repository.get('full_name')
     discussion_number = discussion.get('number')
     comment_id = comment.get('id')
@@ -182,17 +273,19 @@ def github_webhook():
     repo_owner, repo_name = repo_full_name.split('/', 1) if '/' in repo_full_name else (repo_full_name, '')
     original_author = comment.get('user', {}).get('login', '사용자')
 
-    logger.info(f"Comment from: {original_author}")
+    # 사용자명 마스킹
+    masked_author = mask_username(original_author)
+    logger.info(f"Comment from: {masked_author}")
     logger.info(f"Discussion: #{discussion_number}")
 
     # 블로그 소유주의 댓글이면 무시
     if _is_blog_owner(original_author):
-        logger.info(f"Ignoring comment from blog owner: {original_author}")
+        logger.info(f"Ignoring comment from blog owner: {masked_author}")
         return jsonify({'status': 'owner_comment_ignored'}), 200
 
     # AI가 생성한 댓글이면 무시
     if _is_ai_generated_comment(comment_body):
-        logger.info(f"Ignoring AI-generated comment from: {original_author}")
+        logger.info(f"Ignoring AI-generated comment from: {masked_author}")
         return jsonify({'status': 'ai_comment_ignored'}), 200
 
     try:
@@ -223,10 +316,7 @@ def github_webhook():
 @app.route('/health', methods=['GET'])
 def health():
     """헬스 체크"""
-    return jsonify({
-        'status': 'healthy',
-        'blog_owners': BLOG_OWNERS
-    })
+    return jsonify({'status': 'healthy'})
 
 if __name__ == '__main__':
     port = int(os.environ.get('PORT', 8081))
