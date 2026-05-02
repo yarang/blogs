@@ -6,13 +6,14 @@ After=network.target
 Type=simple
 User=ubuntu
 WorkingDirectory=/var/www/auto-comment-worker
-Environment="PORT=8081"
+Environment=PORT=8081
+Environment=CLAUDE_CODE_PATH=/home/ubuntu/.local/bin/claude
+Environment=BLOG_OWNERS=yarang
 LoadCredential=github_token:.github-token
-Environment="GITHUB_TOKEN_FILE=${CREDENTIALS_DIRECTORY}/github_token"
-Environment="CLAUDE_CODE_PATH=/home/ubuntu/.local/bin/claude"
-Environment="BLOG_OWNERS=yarang"
-Environment="GITHUB_WEBHOOK_SECRET_FILE=${CREDENTIALS_DIRECTORY}/webhook_secret"
-ExecStart=/usr/bin/python3 /var/www/auto-comment-worker/auto-comment-worker.py
+LoadCredential=webhook_secret:webhook-secret
+Environment=GITHUB_TOKEN_FILE=%d/github_token
+Environment=GITHUB_WEBHOOK_SECRET_FILE=%d/webhook_secret
+ExecStart=/var/www/auto-comment-worker/venv/bin/python /var/www/auto-comment-worker/scripts/auto-comment-worker.py
 Restart=always
 RestartSec=10
 
@@ -25,8 +26,8 @@ SyslogIdentifier=auto-comment-worker
 NoNewPrivileges=true
 PrivateTmp=true
 ProtectSystem=strict
-ProtectHome=true
-ReadWritePaths=/var/www/auto-comment-worker
+ProtectHome=false
+ReadWritePaths=/var/www/auto-comment-worker /var/log/auto-comment-worker
 ReadOnlyPaths=/etc/auto-comment-worker
 
 # 리소스 제한

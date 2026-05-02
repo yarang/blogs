@@ -64,15 +64,30 @@ else:
 
 
 def validate_executable_path(path: str) -> str:
-    """실행 파일 경로 검증"""
-    real_path = os.path.realpath(path)
-    if not os.path.exists(real_path):
+    """실행 파일 경로 검증 (심볼릭 링크 지원)"""
+    # 원본 경로가 존재하는지 먼저 확인
+    if not os.path.exists(path):
         raise FileNotFoundError(f"Path not found: {path}")
-    if not os.path.isfile(real_path):
+
+    # 심볼릭 링크이면 실제 타겟을 확인하지 않고 링크 자체를 사용
+    if os.path.islink(path):
+        # 심볼릭 링크의 타겟이 존재하는지 확인
+        target = os.readlink(path)
+        if not os.path.exists(os.path.join(os.path.dirname(path), target)):
+            # 절대 경로인 경우
+            if not os.path.exists(target):
+                raise FileNotFoundError(f"Symlink target not found: {target}")
+        # 심볼릭 링크 자체를 반환 (exec가 링크를 따라감)
+        return path
+
+    # 일반 파일인 경우
+    if not os.path.isfile(path):
         raise ValueError(f"Not a file: {path}")
-    if not os.access(real_path, os.X_OK):
+
+    if not os.access(path, os.X_OK):
         raise PermissionError(f"Not executable: {path}")
-    return real_path
+
+    return path
 
 
 CLAUDE_CODE_PATH = validate_executable_path(
