@@ -142,10 +142,14 @@ rssFullContent = true
     page     = [{ type = "toc" }]
 
 [comments]
-    enabled  = false
+    enabled  = true
 
 [cookies]
     enabled = false
 
 [outputs]
   home = ["HTML", "RSS", "JSON"]
+
+[params.giscus]
+  data-repo = "R_kgDORVIAzA"
+  data-category = "DIC_kwDORVIAzM4C8LO7"
