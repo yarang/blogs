@@ -8,10 +8,12 @@ import hashlib
 import html
 import re
 import stat
+from datetime import datetime
 from flask import Flask, request, jsonify
 from subprocess import run
 from flask_limiter import Limiter
 from flask_limiter.util import get_remote_address
+from marshmallow import Schema, fields, validate, ValidationError
 
 # 로깅 설정
 logging.basicConfig(
@@ -30,6 +32,23 @@ limiter = Limiter(
     storage_uri="memory://"
 )
 
+# 감사 로그 설정
+AUDIT_LOG = os.environ.get('AUDIT_LOG_PATH', '/var/log/auto-comment-worker/audit.log')
+
+
+def log_audit(event_type: str, details: dict):
+    """보안 이벤트 감사 로그 기록"""
+    try:
+        os.makedirs(os.path.dirname(AUDIT_LOG), exist_ok=True)
+        with open(AUDIT_LOG, 'a') as f:
+            f.write(json.dumps({
+                'timestamp': datetime.utcnow().isoformat(),
+                'event': event_type,
+                'details': details
+            }) + '\n')
+    except Exception as e:
+        logger.error(f"Failed to write audit log: {e}")
+
 # 환경 변수
 GITHUB_TOKEN_FILE = os.environ.get('GITHUB_TOKEN_FILE', '')
 if GITHUB_TOKEN_FILE and os.path.exists(GITHUB_TOKEN_FILE):
@@ -42,7 +61,23 @@ if GITHUB_TOKEN_FILE and os.path.exists(GITHUB_TOKEN_FILE):
         GITHUB_TOKEN = f.read().strip()
 else:
     GITHUB_TOKEN = os.environ.get('GITHUB_TOKEN', '')
-CLAUDE_CODE_PATH = os.environ.get('CLAUDE_CODE_PATH', '/home/ubuntu/.local/bin/claude')
+
+
+def validate_executable_path(path: str) -> str:
+    """실행 파일 경로 검증"""
+    real_path = os.path.realpath(path)
+    if not os.path.exists(real_path):
+        raise FileNotFoundError(f"Path not found: {path}")
+    if not os.path.isfile(real_path):
+        raise ValueError(f"Not a file: {path}")
+    if not os.access(real_path, os.X_OK):
+        raise PermissionError(f"Not executable: {path}")
+    return real_path
+
+
+CLAUDE_CODE_PATH = validate_executable_path(
+    os.environ.get('CLAUDE_CODE_PATH', '/home/ubuntu/.local/bin/claude')
+)
 AGENTFORGE_CONFIG = os.path.expanduser('~/.agent_forge_for_zai.json')
 GITHUB_API_URL = "https://api.github.com/graphql"
 
@@ -60,6 +95,15 @@ else:
 
 # 블로그 소유주 (답변하지 않을 사용자 목록)
 BLOG_OWNERS = os.environ.get('BLOG_OWNERS', 'yarang').split(',')
+
+
+# 웹훅 요청 검증 스키마
+class WebhookSchema(Schema):
+    action = fields.Str(required=True, validate=validate.Equal('created'))
+    comment = fields.Dict(required=True)
+    discussion = fields.Dict(required=True)
+    repository = fields.Dict(required=True)
+    sender = fields.Dict(required=False)
 
 def sanitize_comment(body: str) -> str:
     """사용자 입력 sanitization"""
@@ -248,15 +292,21 @@ def github_webhook():
     # 시그니처 검증
     signature = request.headers.get('X-Hub-Signature-256')
     if not verify_webhook_signature(request.data, signature):
+        log_audit('SIGNATURE_INVALID', {'ip': request.remote_addr})
         return jsonify({'status': 'unauthorized'}), 401
 
-    payload = request.json
+    # 요청 스키마 검증
+    schema = WebhookSchema()
+    try:
+        payload = schema.load(request.json)
+    except ValidationError as err:
+        logger.warning(f"Invalid webhook payload: {err.messages}")
+        log_audit('INVALID_PAYLOAD', {'ip': request.remote_addr, 'errors': err.messages})
+        return jsonify({'status': 'invalid'}), 400
+
+    log_audit('WEBHOOK_RECEIVED', {'ip': request.remote_addr})
 
     logger.info(f"Payload keys: {list(payload.keys())}")
-
-    # Discussion 댓글 이벤트만 처리
-    if payload.get('action') != 'created':
-        return jsonify({'status': 'ignored'}), 200
 
     # 댓글 정보 추출
     comment = payload.get('comment', {})
@@ -302,16 +352,16 @@ def github_webhook():
 
         if post_reply_graphql(discussion_graphql_id, comment_body, original_author, reply):
             logger.info(f"✓ Replied to comment {comment_id}")
+            log_audit('AI_RESPONSE_SENT', {'discussion': discussion_number, 'comment_id': comment_id})
             return jsonify({'status': 'replied'}), 200
         else:
             logger.error(f"✗ Failed to reply to comment {comment_id}")
             return jsonify({'status': 'failed'}), 500
 
     except Exception as e:
-        logger.error(f"✗ Error: {e}")
-        import traceback
-        traceback.print_exc()
-        return jsonify({'status': 'error', 'message': str(e)}), 500
+        logger.error(f"✗ Error: {e}", exc_info=True)
+        # 상세 traceback은 로그에만, 응답은 간소화
+        return jsonify({'status': 'error', 'message': 'Internal error'}), 500
 
 @app.route('/health', methods=['GET'])
 def health():

@@ -27,6 +27,12 @@ PrivateTmp=true
 ProtectSystem=strict
 ProtectHome=true
 ReadWritePaths=/var/www/auto-comment-worker
+ReadOnlyPaths=/etc/auto-comment-worker
+
+# 리소스 제한
+MemoryMax=512M
+CPUQuota=50%
+TasksMax=100
 
 [Install]
 WantedBy=multi-user.target

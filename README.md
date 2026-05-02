@@ -2,6 +2,50 @@
 
 Hugo 기반 블로그를 GitHub Actions를 통해 OCI Free Tier 서버에 자동 배포하는 설정입니다.
 
+## 보안 설정
+
+### 필수 환경 변수
+
+| 변수명 | 설명 | 예시 |
+|--------|------|------|
+| `GITHUB_WEBHOOK_SECRET` | GitHub 웹훅 시크릿 (random 32+ bytes) | `openssl rand -base64 32` |
+| `GITHUB_TOKEN` | GitHub Personal Access Token | `ghp_xxxx...` |
+| `BLOG_OWNERS` | 댓글 제외할 사용자 (쉼표 구분) | `yarang,admin` |
+| `AUDIT_LOG_PATH` | 감사 로그 경로 | `/var/log/auto-comment-worker/audit.log` |
+
+### 웹훅 시크니처 설정
+
+1. GitHub Webhook 설정에서 시크릿 생성:
+   ```bash
+   openssl rand -base64 32
+   ```
+
+2. 서버에 시크릿 파일 저장:
+   ```bash
+   sudo mkdir -p /etc/auto-comment-worker
+   sudo chmod 700 /etc/auto-comment-worker
+   echo "your_webhook_secret" | sudo tee /etc/auto-comment-worker/webhook-secret
+   sudo chmod 600 /etc/auto-comment-worker/webhook-secret
+   ```
+
+3. GitHub Repository Settings → Webhooks → Secret에 동일한 시크릿 설정
+
+### 감사 로그
+
+감사 로그는 `/var/log/auto-comment-worker/audit.log`에 기록됩니다:
+
+| 이벤트 | 설명 |
+|--------|------|
+| `WEBHOOK_RECEIVED` | 웹훅 수신 |
+| `SIGNATURE_INVALID` | 시그니처 검증 실패 |
+| `INVALID_PAYLOAD` | 요청 스키마 검증 실패 |
+| `AI_RESPONSE_SENT` | AI 응답 전송 완료 |
+
+로그 확인:
+```bash
+sudo tail -f /var/log/auto-comment-worker/audit.log
+```
+
 ## 아키텍처
 
 ```

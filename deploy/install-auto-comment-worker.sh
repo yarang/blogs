@@ -35,6 +35,11 @@ sudo mkdir -p $CREDENTIALS_DIR
 sudo chmod 700 $CREDENTIALS_DIR
 sudo chown root:root $CREDENTIALS_DIR
 
+# 감사 로그 디렉토리 생성
+sudo mkdir -p /var/log/auto-comment-worker
+sudo chmod 755 /var/log/auto-comment-worker
+sudo chown ubuntu:ubuntu /var/log/auto-comment-worker
+
 # systemd service 파일 설치
 sudo mv /tmp/$SERVICE_NAME.service /etc/systemd/system/
 sudo systemctl daemon-reload
@@ -71,16 +76,22 @@ ENDSSH
 echo ""
 echo "6. GitHub 토큰 및 웹훅 시크릿 설정이 필요합니다:"
 echo ""
-echo "   방법 1: stdin 사용 (권장)"
-echo "   echo 'your_github_token' | ssh $WORKER_SERVER 'sudo tee $CREDENTIALS_DIR/github-token > /dev/null'"
-echo "   echo 'your_webhook_secret' | ssh $WORKER_SERVER 'sudo tee $CREDENTIALS_DIR/webhook_secret > /dev/null'"
-echo "   ssh $WORKER_SERVER 'sudo chmod 600 $CREDENTIALS_DIR/github-token $CREDENTIALS_DIR/webhook_secret'"
+echo "   1) 웹훅 시크릿 생성 (로컬에서):"
+echo "      openssl rand -base64 32"
 echo ""
-echo "   방법 2: 직접 접속하여 설정"
-echo "   ssh $WORKER_SERVER"
-echo "   sudo vi $CREDENTIALS_DIR/github-token"
-echo "   sudo vi $CREDENTIALS_DIR/webhook_secret"
-echo "   sudo chmod 600 $CREDENTIALS_DIR/*"
+echo "   2) GitHub 토큰 설정:"
+echo "      echo 'your_github_token' | ssh $WORKER_SERVER 'sudo tee $CREDENTIALS_DIR/github-token > /dev/null'"
+echo "      ssh $WORKER_SERVER 'sudo chmod 600 $CREDENTIALS_DIR/github-token'"
+echo ""
+echo "   3) 웹훅 시크릿 설정:"
+echo "      echo 'your_webhook_secret' | ssh $WORKER_SERVER 'sudo tee $CREDENTIALS_DIR/webhook-secret > /dev/null'"
+echo "      ssh $WORKER_SERVER 'sudo chmod 600 $CREDENTIALS_DIR/webhook-secret'"
+echo ""
+echo "   또는 직접 접속하여 설정:"
+echo "      ssh $WORKER_SERVER"
+echo "      sudo vi $CREDENTIALS_DIR/github-token"
+echo "      sudo vi $CREDENTIALS_DIR/webhook-secret"
+echo "      sudo chmod 600 $CREDENTIALS_DIR/*"
 echo ""
 
 echo ""
