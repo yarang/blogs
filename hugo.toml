@@ -141,10 +141,6 @@ rssFullContent = true
     ]
     page     = [{ type = "toc" }]
 
-[comments]
-    provider = "giscus"
-    enabled  = true
-
 [cookies]
     enabled = false
 
@@ -154,15 +150,21 @@ rssFullContent = true
 
 
 # giscus 설정 (GitHub Discussions 기반 댓글)
-[params.comments.giscus]
-    repo = "yarang/blogs"
-    repoId = "R_kgDORVIAzA"
-    category = "General"
-    categoryId = "DIC_kwDORVIAzM4C8LO7"
-    mapping = "pathname"
-    strict = "0"
-    reactionsEnabled = "1"
-    emitMetadata = "0"
-    inputPosition = "bottom"
-    lang = "ko"
-    theme = "noborder_gray"
+
+# 댓글 설정
+[params]
+    [params.comments]
+        enabled = true
+        provider = "giscus"
+        [params.comments.giscus]
+            repo = "yarang/blogs"
+            repoId = "R_kgDORVIAzA"
+            category = "General"
+            categoryId = "DIC_kwDORVIAzM4C8LO7"
+            mapping = "pathname"
+            strict = "0"
+            reactionsEnabled = "1"
+            emitMetadata = "0"
+            inputPosition = "bottom"
+            lang = "ko"
+            theme = "noborder_gray"
