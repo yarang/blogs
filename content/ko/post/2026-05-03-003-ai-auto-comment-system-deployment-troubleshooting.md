@@ -1,6 +1,7 @@
 +++
 title = "블로그 AI 자동 댓글 시스템 구축기 (3/3) — 배포와 트러블슈팅"
-date = 2026-05-03T02:20:00+09:00
+slug = "ai-auto-comment-system-part3-deployment"
+date = 2026-05-03T01:20:00+09:00
 draft = false
 tags = ["systemd", "nginx", "deployment", "troubleshooting", "oci", "arm", "linux"]
 categories = ["Development", "DevOps"]
@@ -11,7 +12,7 @@ TocOpen = true
 
 ## 개요
 
-[1부](/ko/post/ai-auto-comment-system-architecture-and-implementation/)에서 아키텍처와 구현을, [2부](/ko/post/ai-auto-comment-system-security/)에서 보안 강화를 다뤘습니다. 이번 3부에서는 실제 OCI ARM 서버에 배포하고 겪은 트러블슈팅 과정을 기록합니다.
+[1부](/ko/post/ai-auto-comment-system-part1-architecture/)에서 아키텍처와 구현을, [2부](/ko/post/ai-auto-comment-system-part2-security/)에서 보안 강화를 다뤘습니다. 이번 3부에서는 실제 OCI ARM 서버에 배포하고 겪은 트러블슈팅 과정을 기록합니다.
 
 특히 **GITHUB_TOKEN이 로드되지 않는 문제**를 4단계에 걸쳐 추적하고 해결한 실제 디버깅 과정을 상세히 공유합니다. "설정했는데 왜 안 되지?"라는 상황에서 어떻게 원인을 좁혀나갔는지가 이 글의 핵심입니다.
 

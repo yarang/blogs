@@ -1,6 +1,7 @@
 +++
 title = "블로그 AI 자동 댓글 시스템 구축기 (1/3) — 아키텍처와 구현"
-date = 2026-05-03T02:00:00+09:00
+slug = "ai-auto-comment-system-part1-architecture"
+date = 2026-05-03T01:00:00+09:00
 draft = false
 tags = ["ai", "giscus", "github-discussions", "webhook", "flask", "claude-code", "automation", "blog"]
 categories = ["Development", "AI", "DevOps"]

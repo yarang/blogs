@@ -1,6 +1,7 @@
 +++
 title = "블로그 AI 자동 댓글 시스템 구축기 (2/3) — 보안 강화"
-date = 2026-05-03T02:10:00+09:00
+slug = "ai-auto-comment-system-part2-security"
+date = 2026-05-03T01:10:00+09:00
 draft = false
 tags = ["security", "hmac", "credential-management", "file-permissions", "systemd", "hardening"]
 categories = ["Development", "Security", "DevOps"]
@@ -11,7 +12,7 @@ TocOpen = true
 
 ## 개요
 
-[1부](/ko/post/ai-auto-comment-system-architecture-and-implementation/)에서 AI 자동 댓글 시스템의 아키텍처와 구현을 다뤘습니다. 이번 2부에서는 보안 측면을 집중적으로 다룹니다.
+[1부](/ko/post/ai-auto-comment-system-part1-architecture/)에서 AI 자동 댓글 시스템의 아키텍처와 구현을 다뤘습니다. 이번 2부에서는 보안 측면을 집중적으로 다룹니다.
 
 외부 Webhook을 수신하고, GitHub API 토큰을 관리하며, 사용자 입력을 처리하는 시스템은 보안이 특히 중요합니다. 환경 변수 대신 파일 기반 인증으로 전환한 과정과 그 이유, 각 보안 계층의 설계를 설명합니다.
 
