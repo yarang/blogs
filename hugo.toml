@@ -151,11 +151,13 @@ rssFullContent = true
   home = ["HTML", "RSS", "JSON"]
 
 
+
+# giscus 설정 (GitHub Discussions 기반 댓글)
 [params.giscus]
     repo = "yarang/blogs"
-    repoId = "R_kgDORVIAzA"  # giscus.app에서 생성된 값
+    repoId = "R_kgDORVIAzA"
     category = "General"
-    categoryId = "DIC_kwDORVIAzM4C8LO7"  # giscus.app에서 생성된 값
+    categoryId = "DIC_kwDORVIAzM4C8LO7"
     mapping = "pathname"
     strict = "0"
     reactionsEnabled = "1"
