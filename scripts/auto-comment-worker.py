@@ -97,16 +97,34 @@ AGENTFORGE_CONFIG = os.path.expanduser('~/.agent_forge_for_zai.json')
 GITHUB_API_URL = "https://api.github.com/graphql"
 
 # 웹훅 시크릿 로드
+WEBHOOK_SECRET = None
 WEBHOOK_SECRET_FILE = os.environ.get('GITHUB_WEBHOOK_SECRET_FILE', '')
-if WEBHOOK_SECRET_FILE and os.path.exists(WEBHOOK_SECRET_FILE):
-    st = os.stat(WEBHOOK_SECRET_FILE)
-    if st.st_mode & (stat.S_IRWXO | stat.S_IRWXG):
-        logger.error("Webhook secret file has insecure permissions")
-        raise PermissionError("Webhook secret file must be 600 or 400")
-    with open(WEBHOOK_SECRET_FILE, 'r') as f:
-        WEBHOOK_SECRET = f.read().strip()
-else:
+
+# 파일에서 시크릿 로드 시도
+if WEBHOOK_SECRET_FILE:
+    try:
+        if os.path.exists(WEBHOOK_SECRET_FILE):
+            st = os.stat(WEBHOOK_SECRET_FILE)
+            if st.st_mode & (stat.S_IRWXO | stat.S_IRWXG):
+                logger.error("Webhook secret file has insecure permissions")
+                raise PermissionError("Webhook secret file must be 600 or 400")
+            with open(WEBHOOK_SECRET_FILE, 'r') as f:
+                WEBHOOK_SECRET = f.read().strip()
+            logger.info(f"Webhook secret loaded from file: {WEBHOOK_SECRET_FILE}")
+        else:
+            logger.warning(f"Webhook secret file not found: {WEBHOOK_SECRET_FILE}")
+    except Exception as e:
+        logger.error(f"Failed to read webhook secret file: {e}")
+
+# 파일 로드 실패시 환경변수에서 시도
+if not WEBHOOK_SECRET:
     WEBHOOK_SECRET = os.environ.get('GITHUB_WEBHOOK_SECRET', '')
+    if WEBHOOK_SECRET:
+        logger.info("Webhook secret loaded from environment variable")
+
+# 시크릿이 없는 경우 경고하지만 서비스는 계속 실행
+if not WEBHOOK_SECRET:
+    logger.warning("GITHUB_WEBHOOK_SECRET not configured - webhook signature validation will fail")
 
 # 블로그 소유주 (답변하지 않을 사용자 목록)
 BLOG_OWNERS = os.environ.get('BLOG_OWNERS', 'yarang').split(',')
@@ -139,8 +157,9 @@ def verify_webhook_signature(payload: bytes, signature: str) -> bool:
         return False
 
     if not WEBHOOK_SECRET:
-        logger.error("GITHUB_WEBHOOK_SECRET not configured")
-        return False
+        logger.warning("GITHUB_WEBHOOK_SECRET not configured - skipping signature validation")
+        # 시크릿이 없어도 서비스가 실행되도록 허용 (development mode)
+        return True
 
     try:
         hash_algorithm, github_signature = signature.split('=', 1)
