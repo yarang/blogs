@@ -153,7 +153,7 @@ rssFullContent = true
 
 
 # giscus 설정 (GitHub Discussions 기반 댓글)
-[params.giscus]
+[params.comments.giscus]
     repo = "yarang/blogs"
     repoId = "R_kgDORVIAzA"
     category = "General"
