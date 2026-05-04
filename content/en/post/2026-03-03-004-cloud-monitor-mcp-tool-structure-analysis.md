@@ -1,6 +1,6 @@
 +++
 title = "[Cloud Monitor] MCP Tool Structure and Pros/Cons Analysis"
-slug = "2026-03-03-002-cloud-monitor-mcp-tool-structure-analysis"
+slug = "2026-03-03-004-cloud-monitor-mcp-tool-structure-analysis"
 date = 2026-03-03T15:02:49+09:00
 draft = false
 tags = ["mcp", "fastmcp", "discord", "ssh", "server-monitoring", "cloud"]
