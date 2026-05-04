@@ -36,3 +36,11 @@ mcp_client/.venv/
 .mcp.json
 .mcp.json.local
 .claude/settings.local.json
+
+# Worker venv
+venv/
+__pycache__/
+
+# Legacy standalone worker (replaced by blog-agent.py)
+auto-comment-worker.py
+requirements-auto-comment-worker.txt

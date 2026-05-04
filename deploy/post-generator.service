@@ -1,0 +1,31 @@
+[Unit]
+Description=Daily Blog Post Generator
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=ubuntu
+WorkingDirectory=/var/www/auto-comment-worker
+ExecStart=/usr/bin/python3 /var/www/auto-comment-worker/scripts/post-generator.py
+
+# Logging
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=post-generator
+
+# Security
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=false
+ReadOnlyPaths=/etc/auto-comment-worker
+ReadWritePaths=/var/log/auto-comment-worker
+
+# Resource limits — Claude Code CLI는 더 많은 리소스 필요
+MemoryMax=1G
+CPUQuota=80%
+TimeoutStartSec=300
+
+[Install]
+WantedBy=multi-user.target

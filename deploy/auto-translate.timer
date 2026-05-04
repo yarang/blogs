@@ -1,0 +1,16 @@
+[Unit]
+Description=Auto Translate Blog Posts Timer
+Requires=auto-translate.service
+
+[Timer]
+# 매 6시간마다 실행 (00:30, 06:30, 12:30, 18:30)
+OnCalendar=*-*-* 00/6:30:00
+# 부팅 후 5분 뒤 첫 실행
+OnBootSec=5min
+# 타이머가 놓친 실행 보충
+Persistent=true
+# 실행 시각 약간 분산 (서버 부하 분산)
+RandomizedDelaySec=300
+
+[Install]
+WantedBy=timers.target

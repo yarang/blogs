@@ -1,0 +1,33 @@
+[Unit]
+Description=Unified Blog Agent (comment + translate + post-gen)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=ubuntu
+WorkingDirectory=/var/www/auto-comment-worker/scripts
+ExecStart=/var/www/auto-comment-worker/venv/bin/python /var/www/auto-comment-worker/scripts/blog-agent.py
+Restart=always
+RestartSec=10
+
+# Logging
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=blog-agent
+
+# Security
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=false
+ReadWritePaths=/var/www/auto-comment-worker /var/log/auto-comment-worker
+ReadOnlyPaths=/etc/auto-comment-worker
+
+# Resource limits
+MemoryMax=512M
+CPUQuota=80%
+TasksMax=100
+
+[Install]
+WantedBy=multi-user.target

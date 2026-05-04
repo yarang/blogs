@@ -1,0 +1,16 @@
+[Unit]
+Description=Daily Blog Post Generator Timer
+Requires=post-generator.service
+
+[Timer]
+# 매일 오전 9시 실행 (KST)
+OnCalendar=*-*-* 09:00:00
+# 부팅 후 10분 뒤 체크
+OnBootSec=10min
+# 놓친 실행 보충
+Persistent=true
+# 1시간 범위에서 랜덤 지연
+RandomizedDelaySec=3600
+
+[Install]
+WantedBy=timers.target

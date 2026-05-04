@@ -1,0 +1,30 @@
+[Unit]
+Description=Auto Translate Blog Posts
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=ubuntu
+WorkingDirectory=/var/www/auto-comment-worker
+ExecStart=/var/www/auto-comment-worker/scripts/auto-translate.sh
+
+# Logging
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=auto-translate
+
+# Security
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=false
+ReadOnlyPaths=/etc/auto-comment-worker
+
+# Resource limits
+MemoryMax=256M
+CPUQuota=30%
+TimeoutStartSec=180
+
+[Install]
+WantedBy=multi-user.target
