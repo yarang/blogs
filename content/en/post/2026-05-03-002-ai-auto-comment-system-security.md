@@ -1,5 +1,5 @@
 +++
-title = ""
+title = "Building a Blog AI Auto-Comment System (2/3) — Security Hardening"
 slug = "ai-auto-comment-system-part2-security"
 date = "2026-05-03T01:10:00+09:00"
 draft = "false"

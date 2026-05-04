@@ -1,5 +1,5 @@
 +++
-title = ""
+title = "Maximizing Development Productivity by 17x: Building a Low-Cost AI Agent Loop with DeepSeek V4 and Claude Code"
 date = "2026-05-04T09:01:31+09:00"
 draft = "false"
 tags = ["AI", "ClaudeCode", "DeepSeek", "Agent", "Automation", "MCP"]

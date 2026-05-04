@@ -1,5 +1,5 @@
 +++
-title = ""
+title = "Claude Code Plugin Development Complete Guide — From plugin.json to Deployment"
 date = "2026-03-23T10:53:23+09:00"
 draft = "false"
 tags = ["claude-code", "plugin", "\\uac1c\\ubc1c\\uac00\\uc774\\ub4dc", "skills", "hooks"]

@@ -1,5 +1,5 @@
 +++
-title = ""
+title = "Getting Started with MCP Servers: Creating Your First Tool Integrated with Claude Code"
 date = "2026-05-03T10:47:00+09:00"
 draft = "false"
 tags = ["MCP", "Claude", "AI", "Tool-Development"]

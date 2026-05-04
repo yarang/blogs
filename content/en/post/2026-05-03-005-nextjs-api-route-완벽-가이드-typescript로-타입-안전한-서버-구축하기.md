@@ -1,5 +1,5 @@
 +++
-title = ""
+title = "The Ultimate Guide to Next.js API Routes: Building Type-Safe Servers with TypeScript"
 date = "2026-05-03T12:48:53+09:00"
 draft = "false"
 tags = ["Next.js", "TypeScript", "API", "Node.js", "Web Development"]

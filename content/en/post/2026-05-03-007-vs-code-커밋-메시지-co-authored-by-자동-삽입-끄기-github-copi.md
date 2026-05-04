@@ -1,5 +1,5 @@
 +++
-title = ""
+title = "Disabling Automatic 'Co-Authored-by' Insertion in VS Code Commit Messages: GitHub Copilot Settings Guide"
 date = "2026-05-03T14:04:28+09:00"
 draft = "false"
 tags = ["VSCode", "Git", "GitHub Copilot", "Troubleshooting", "DevelopmentEnvironment"]

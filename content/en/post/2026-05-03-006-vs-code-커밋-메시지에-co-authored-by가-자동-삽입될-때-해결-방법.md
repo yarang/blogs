@@ -1,5 +1,5 @@
 +++
-title = ""
+title = "How to Fix Automatic 'Co-Authored-by' Insertion in VS Code Commit Messages"
 date = "2026-05-03T12:52:59+09:00"
 draft = "false"
 tags = ["VSCode", "Git", "Copilot", "Troubleshooting", "Development"]
