@@ -313,4 +313,3 @@ The current system is structured such that workers process tasks independently. 
 -   **Cost Tracking**: Aggregating API call costs per worker.
 
 The code is publicly available on GitHub.
-```
