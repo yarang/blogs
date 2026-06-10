@@ -51,7 +51,8 @@ impl AgentState {
 
 ZeroClaw의 에이전트들은 서로 직접 호출하지 않고, 중앙의 **이벤트 버스(Event Bus)**나 **Pub/Sub** 메커니즘을 통해 통신합니다. 이는 결합도(Coupling)를 낮추고 확장성을 확보합니다.
 
-```rustn// 통신 프로토콜 메시지 정의
+```rust
+// 통신 프로토콜 메시지 정의
 #[derive(Debug, Clone)]
 pub enum AgentMessage {
     TaskRequest { task_id: String, payload: String },

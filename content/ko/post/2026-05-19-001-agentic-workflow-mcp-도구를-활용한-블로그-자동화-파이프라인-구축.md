@@ -34,7 +34,8 @@ MCP는 클라이언트(예: Claude Desktop 또는 IDE)와 호스트 프로그램
 
 아래는 MCP 표준에 맞춰 '블로그 포스트 작성' 도구(Tool)를 정의하는 간단한 예제 코드입니다.
 
-```rustuse serde::{Deserialize, Serialize};use serde_json::Value;
+```rust
+use serde::{Deserialize, Serialize};use serde_json::Value;
 
 /// MCP 도구 요청 스키마#[derive(Debug, Deserialize)]struct CreatePostArgs {    title: String,    content: String,    tags: Option<Vec<String>>,}
 

@@ -151,7 +151,8 @@ pub async fn complete_job(pool: &PgPool, job_id: i32, success: bool, error_msg: 
 
 이제 위 함수를 사용해 무한 루프(또는 Tokio의 `tokio::time::interval`)를 돌며 작업을 처리합니다.
 
-```rustnasync fn worker_loop(pool: PgPool, worker_id: String) {
+```rust
+async fn worker_loop(pool: PgPool, worker_id: String) {
     loop {
         match claim_job(&pool, &worker_id).await {
             Ok(Some(job)) => {

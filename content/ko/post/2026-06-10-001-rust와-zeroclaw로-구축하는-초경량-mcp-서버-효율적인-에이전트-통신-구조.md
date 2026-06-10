@@ -40,7 +40,8 @@ hyper = { version = "0.14", features = ["full"] }
 
 MCP는 기본적으로 JSON-RPC와 유사한 구조를 가집니다. 에이전트 간 통신 시 데이터의 무결성을 보장하기 위해 Rust의 타입 시스템을 적극 활용합니다.
 
-```rustn// src/types.rs
+```rust
+// src/types.rs
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -70,7 +71,8 @@ pub struct MCPError {
 
 `ZeroClaw`의 철학처럼 불필요한 추상화 계층을 제거하고, 직관적인 핸들러를 작성합니다. 아래 코드는 들어오는 요청을 파싱하고, 메서드 이름에 따라 적절한 처리를 수행한 뒤 응답을 반환하는 흐름입니다.
 
-```rustn// src/main.rs
+```rust
+// src/main.rs
 use hyper::{Body, Request, Response, Server, StatusCode};
 use hyper::service::{make_service_fn, service_fn};
 use std::convert::Infallible;

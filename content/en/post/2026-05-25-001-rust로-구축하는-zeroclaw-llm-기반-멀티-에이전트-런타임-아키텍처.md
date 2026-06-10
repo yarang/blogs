@@ -49,7 +49,8 @@ As discussed in the `Multi-Agent: File-Based Architecture Design` discussion, th
 
 ZeroClaw's agents do not call each other directly. Instead, they communicate through a central **Event Bus** or a **Pub/Sub** mechanism. This reduces coupling and ensures scalability.
 
-```rustn// Communication protocol message definition
+```rust
+// Communication protocol message definition
 #[derive(Debug, Clone)]
 pub enum AgentMessage {
     TaskRequest { task_id: String, payload: String },

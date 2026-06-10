@@ -61,7 +61,8 @@ struct McpMessage {
 
 ZeroMQ의 Context는 스레드 안전(Thread-safe)하므로, 애플리케이션 전역에서 하나만 생성하여 공유하는 것이 일반적입니다.
 
-```rustnouse std::time::SystemTime;
+```rust
+ouse std::time::SystemTime;
 use zmq::{Context, Socket, SocketType};
 
 struct McpRouter {

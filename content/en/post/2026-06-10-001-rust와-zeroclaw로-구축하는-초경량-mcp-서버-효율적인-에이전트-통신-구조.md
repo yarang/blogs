@@ -40,7 +40,8 @@ hyper = { version = "0.14", features = ["full"] }
 
 MCP fundamentally has a structure similar to JSON-RPC. We actively utilize Rust's type system to ensure data integrity during agent-to-agent communication.
 
-```rustn// src/types.rs
+```rust
+// src/types.rs
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -70,7 +71,8 @@ pub struct MCPError {
 
 In line with `ZeroClaw`'s philosophy, we will remove unnecessary abstraction layers and write intuitive handlers. The following code demonstrates the flow of parsing incoming requests, performing appropriate processing based on the method name, and returning a response.
 
-```rustn// src/main.rs
+```rust
+// src/main.rs
 use hyper::{Body, Request, Response, Server, StatusCode};
 use hyper::service::{make_service_fn, service_fn};
 use std::convert::Infallible;
