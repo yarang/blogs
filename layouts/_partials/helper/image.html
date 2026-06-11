@@ -9,7 +9,7 @@
 ///     Height: Image height
 ///     Width: Image width
 
-{{ $result := dict "Local" false "Resource" nil "Permalink" "" "Height" nil "Width" nil }}
+{{ $result := false }}
 
 {{ if .Image }}
     {{ $url := urls.Parse .Image }}
@@ -56,8 +56,4 @@
     {{ end }}
 {{ end }}
 
-{{- if eq $result.Permalink "" -}}
-  {{ return false }}
-{{- else -}}
-  {{ return $result }}
-{{- end -}}
+{{ return $result }}
